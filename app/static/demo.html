@@ -23,10 +23,19 @@
     body {
       margin: 0;
       font-family: var(--font);
-      background: radial-gradient(1200px 600px at 10% -10%, #1e3a5f 0%, var(--bg) 55%);
       color: var(--text);
       min-height: 100vh;
       line-height: 1.5;
+      /* Stripe-style SaaS mesh: layered radials + soft vertical wash */
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse 120% 80% at 50% -30%, rgba(99, 102, 241, 0.22), transparent 55%),
+        radial-gradient(ellipse 90% 60% at 100% 0%, rgba(56, 189, 248, 0.14), transparent 50%),
+        radial-gradient(ellipse 70% 55% at 0% 20%, rgba(139, 92, 246, 0.12), transparent 45%),
+        radial-gradient(ellipse 100% 70% at 50% 110%, rgba(30, 58, 95, 0.45), transparent 55%),
+        linear-gradient(180deg, rgba(12, 18, 34, 0) 0%, var(--bg) 72%);
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
     }
     a { color: var(--accent); }
     header {
@@ -46,12 +55,6 @@
       align-items: center;
       gap: 0.75rem 1rem;
       justify-content: space-between;
-    }
-    h1 {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin: 0;
-      letter-spacing: -0.02em;
     }
     .nav-links {
       display: flex;
@@ -497,21 +500,24 @@
         box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
       }
     }
-    .mvp-label {
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(125, 211, 252, 0.88);
-      margin: 0 0 0.35rem;
+    .header-brand-block {
+      min-width: 0;
+      flex: 1 1 16rem;
+    }
+    #tour-brand h1 {
+      font-size: 1.28rem;
+      font-weight: 650;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+      margin: 0;
     }
     .header-value-prop {
-      margin: 0.15rem 0 0;
-      font-size: 0.92rem;
-      color: rgba(148, 163, 184, 0.96);
-      max-width: 38rem;
-      line-height: 1.45;
-      font-weight: 450;
+      margin: 0.4rem 0 0;
+      font-size: 0.84rem;
+      color: rgba(148, 163, 184, 0.88);
+      max-width: 32rem;
+      line-height: 1.4;
+      font-weight: 400;
     }
     button.secondary {
       width: 100%;
@@ -837,6 +843,26 @@
       color: rgba(100, 116, 139, 0.7);
       user-select: none;
     }
+    footer .footer-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      vertical-align: middle;
+    }
+    footer .footer-item .lucide {
+      width: 0.92rem;
+      height: 0.92rem;
+      stroke-width: 2;
+      flex-shrink: 0;
+      opacity: 0.88;
+    }
+    footer a.footer-item {
+      color: var(--accent);
+    }
+    footer .footer-at {
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
 
     /* —— Loading overlay (Stripe-inspired, no inner scroll) —— */
     .load-overlay {
@@ -1128,12 +1154,9 @@
 <body>
   <header>
     <div class="inner">
-      <div id="tour-brand">
-        <p class="mvp-label">AI Pricing Decision Engine (LLM-powered)</p>
+      <div id="tour-brand" class="header-brand-block">
         <h1>Agentic AI Decision Engine</h1>
-        <p class="header-value-prop">
-          Transforms product and competitor data into actionable pricing decisions using AI.
-        </p>
+        <p class="header-value-prop">Pricing recommendations from live catalog and competitor inputs.</p>
       </div>
       <nav class="nav-links" id="tour-nav" aria-label="Primary">
         <button type="button" class="nav-chip" id="tour-launch" title="Replay tour">
@@ -1270,13 +1293,37 @@
   <footer>
     <span class="byline">Created by Rusben Madrigal</span>
     <address class="footer-contact">
-      <span>San José, Costa Rica</span>
+      <span class="footer-item">
+        <i data-lucide="map-pin" aria-hidden="true"></i>
+        <span>San José, Costa Rica</span>
+      </span>
       <span class="sep" aria-hidden="true">·</span>
-      <a href="mailto:rusbenmadrigal@gmail.com">rusbenmadrigal@gmail.com</a>
+      <a
+        class="footer-item"
+        href="https://www.linkedin.com/in/rusmadrigal"
+        rel="noopener noreferrer"
+        target="_blank"
+        aria-label="LinkedIn — @rusmadrigal"
+      >
+        <i data-lucide="linkedin" aria-hidden="true"></i>
+        <span class="footer-at">@rusmadrigal</span>
+      </a>
       <span class="sep" aria-hidden="true">·</span>
-      <a href="https://github.com/rusmadrigal" rel="noopener noreferrer">@rusmadrigal</a>
+      <a
+        class="footer-item"
+        href="https://github.com/rusmadrigal"
+        rel="noopener noreferrer"
+        target="_blank"
+        aria-label="GitHub — @rusmadrigal"
+      >
+        <i data-lucide="github" aria-hidden="true"></i>
+        <span class="footer-at">@rusmadrigal</span>
+      </a>
       <span class="sep" aria-hidden="true">·</span>
-      <a href="https://www.rusmadrigal.com" rel="noopener noreferrer">www.rusmadrigal.com</a>
+      <a class="footer-item" href="https://www.rusmadrigal.com" rel="noopener noreferrer" target="_blank">
+        <i data-lucide="globe" aria-hidden="true"></i>
+        <span>www.rusmadrigal.com</span>
+      </a>
     </address>
     <p class="footer-stack">Built with FastAPI · FAISS RAG · OpenAI · For technical review</p>
   </footer>

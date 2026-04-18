@@ -119,6 +119,6 @@ docs/images/mvp.png       # MVP screenshot
 **Rusben Madrigal**  
 San José, Costa Rica  
 
-- Email: [rusbenmadrigal@gmail.com](mailto:rusbenmadrigal@gmail.com)  
+- LinkedIn: [linkedin.com/in/rusmadrigal](https://www.linkedin.com/in/rusmadrigal)  
 - GitHub: [@rusmadrigal](https://github.com/rusmadrigal)  
 - Website: [www.rusmadrigal.com](https://www.rusmadrigal.com)  

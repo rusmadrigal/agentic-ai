@@ -12,13 +12,16 @@ def test_root_serves_demo_html():
     assert "/v1/decisions" in r.text
     assert "Created by Rusben Madrigal" in r.text
     assert "San José, Costa Rica" in r.text
-    assert "rusbenmadrigal@gmail.com" in r.text
+    assert "linkedin.com/in/rusmadrigal" in r.text
+    assert "github.com/rusmadrigal" in r.text
+    assert "@rusmadrigal" in r.text
     assert "rusmadrigal.com" in r.text
+    assert "data-lucide=" in r.text
     assert "load-overlay" in r.text
     assert "Collecting your data" in r.text
     assert "Replay tour" in r.text
     assert "Fetch product" in r.text
-    assert "AI Pricing Decision Engine (LLM-powered)" in r.text
+    assert "Pricing recommendations from live catalog" in r.text
     assert "starts automatically" in r.text
     assert "aide_demo_tour_v4_done" in r.text
     assert "tour-root" in r.text
