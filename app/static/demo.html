@@ -54,7 +54,23 @@
       letter-spacing: -0.02em;
     }
     .tagline { color: var(--muted); font-size: 0.9rem; margin: 0.15rem 0 0; max-width: 36rem; }
-    .nav-links { display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.88rem; }
+    .nav-links { display: flex; gap: 0.65rem 1rem; flex-wrap: wrap; font-size: 0.88rem; align-items: center; }
+    button.tour-launch {
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.38rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(15, 23, 42, 0.65);
+      color: #e2e8f0;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+    }
+    button.tour-launch:hover {
+      border-color: rgba(56, 189, 248, 0.55);
+      color: #fff;
+    }
     main {
       max-width: 1100px;
       margin: 0 auto;
@@ -307,16 +323,155 @@
     }
     #out .cards::-webkit-scrollbar-track,
     pre.raw::-webkit-scrollbar-track { background: transparent; }
+
+    /* —— Guided tour (professional, mobile-safe) —— */
+    #tour-root {
+      position: fixed;
+      inset: 0;
+      z-index: 250;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+    #tour-root.is-open {
+      pointer-events: auto;
+      opacity: 1;
+      visibility: visible;
+    }
+    .tour-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(6, 10, 22, 0.78);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    .tour-card {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: min(100vw - 2rem, 22.5rem);
+      max-height: min(88vh, 28rem);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border-radius: 1rem;
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+        0 24px 64px -12px rgba(0, 0, 0, 0.55);
+      z-index: 252;
+      text-align: left;
+    }
+    .tour-card-inner {
+      padding: 1.25rem 1.25rem 1rem;
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+    .tour-kicker {
+      margin: 0 0 0.35rem;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(148, 163, 184, 0.9);
+    }
+    .tour-card h2 {
+      margin: 0 0 0.55rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #f8fafc;
+      line-height: 1.25;
+    }
+    .tour-card p.tour-copy {
+      margin: 0;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      color: rgba(203, 213, 225, 0.95);
+    }
+    .tour-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem 1rem;
+      border-top: 1px solid rgba(51, 65, 85, 0.65);
+      background: rgba(15, 23, 42, 0.5);
+    }
+    .tour-actions .left {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .tour-actions button {
+      font: inherit;
+      font-size: 0.82rem;
+      cursor: pointer;
+      border-radius: 8px;
+      padding: 0.45rem 0.85rem;
+    }
+    button.tour-skip {
+      border: none;
+      background: transparent;
+      color: rgba(148, 163, 184, 0.95);
+    }
+    button.tour-skip:hover { color: #fff; }
+    button.tour-back {
+      border: 1px solid rgba(71, 85, 105, 0.8);
+      background: rgba(30, 41, 59, 0.6);
+      color: #e2e8f0;
+    }
+    button.tour-next {
+      border: none;
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: #0c1222;
+      font-weight: 600;
+    }
+    button.tour-next:disabled,
+    button.tour-back:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .tour-progress {
+      margin: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 0.72rem;
+      color: rgba(148, 163, 184, 0.85);
+      padding-top: 0.35rem;
+    }
+    .tour-spotlight {
+      outline: 2px solid rgba(56, 189, 248, 0.95) !important;
+      outline-offset: 4px !important;
+      border-radius: 10px;
+      transition: outline-color 0.2s ease;
+    }
+    @media (max-width: 520px) {
+      .tour-card {
+        top: auto;
+        bottom: max(0.75rem, env(safe-area-inset-bottom));
+        left: 50%;
+        transform: translateX(-50%);
+        max-height: 52vh;
+      }
+    }
   </style>
 </head>
 <body>
   <header>
     <div class="inner">
-      <div>
+      <div id="tour-brand">
         <h1>Agentic AI Decision Engine</h1>
         <p class="tagline">RAG + multi-step agents → structured commercial decisions for e-commerce (MVP).</p>
       </div>
-      <nav class="nav-links">
+      <nav class="nav-links" id="tour-nav" aria-label="Primary">
+        <button type="button" class="tour-launch" id="tour-launch" title="Start a short walkthrough of this demo">
+          Guided tour
+        </button>
         <a href="/docs">OpenAPI (Swagger)</a>
         <a href="/health">Health JSON</a>
         <a href="/api/readiness">Readiness</a>
@@ -327,7 +482,7 @@
     <div id="banner" class="banner" role="status" aria-live="polite"></div>
 
     <div class="layout-split">
-    <section class="panel panel-input">
+    <section class="panel panel-input" id="tour-input-panel">
       <h2>Product input</h2>
       <label for="title">Title</label>
       <input id="title" type="text" value="Merino crewneck sweater — limited colors" />
@@ -366,13 +521,13 @@
       <label for="constraints">Constraints (one per line)</label>
       <textarea id="constraints">Avoid sitewide 20% coupons
 Premium adjacency on collection pages</textarea>
-      <h2 style="margin-top:1rem">Competitors</h2>
+      <h2 id="tour-competitors" style="margin-top:1rem">Competitors</h2>
       <div id="competitors"></div>
       <button type="button" class="ghost" id="addComp">+ Add competitor</button>
       <button type="button" class="primary" id="run">Generate decision brief</button>
     </section>
 
-    <section class="panel panel-output" id="out">
+    <section class="panel panel-output" id="out" aria-label="Decision output">
       <h2>Output</h2>
       <div id="result" class="cards">
         <p class="empty-state">Run the pipeline to see executive summary, analysis, and decisions here.</p>
@@ -384,6 +539,31 @@ Premium adjacency on collection pages</textarea>
     Built with FastAPI · FAISS RAG · OpenAI · For technical review
     <span class="byline">Created by Rusben Madrigal</span>
   </footer>
+
+  <div id="tour-root" aria-hidden="true">
+    <div class="tour-backdrop" id="tour-backdrop" aria-hidden="true"></div>
+    <div
+      class="tour-card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="tour-card-title"
+      aria-describedby="tour-card-copy"
+    >
+      <div class="tour-card-inner">
+        <p class="tour-kicker" id="tour-kicker">Guided tour</p>
+        <h2 id="tour-card-title"></h2>
+        <p class="tour-copy" id="tour-card-copy"></p>
+      </div>
+      <div class="tour-actions">
+        <button type="button" class="tour-skip" id="tour-skip">Skip tour</button>
+        <div class="left">
+          <button type="button" class="tour-back" id="tour-back">Back</button>
+          <button type="button" class="tour-next" id="tour-next">Next</button>
+        </div>
+      </div>
+      <p class="tour-progress" id="tour-progress" aria-live="polite"></p>
+    </div>
+  </div>
 
   <div id="load-overlay" class="load-overlay" aria-hidden="true">
     <div
@@ -432,12 +612,170 @@ Premium adjacency on collection pages</textarea>
     function closeLoader() {
       loadOverlay.classList.remove("is-open");
       loadOverlay.setAttribute("aria-hidden", "true");
-      document.body.style.overflow = "";
+      if (!document.getElementById("tour-root").classList.contains("is-open")) {
+        document.body.style.overflow = "";
+      }
       if (loadStepTimer) {
         window.clearInterval(loadStepTimer);
         loadStepTimer = null;
       }
     }
+
+    /* —— Guided tour —— */
+    const tourRoot = document.getElementById("tour-root");
+    const tourTitle = document.getElementById("tour-card-title");
+    const tourCopy = document.getElementById("tour-card-copy");
+    const tourKicker = document.getElementById("tour-kicker");
+    const tourProgress = document.getElementById("tour-progress");
+    const tourBack = document.getElementById("tour-back");
+    const tourNext = document.getElementById("tour-next");
+    const tourSkip = document.getElementById("tour-skip");
+    const tourLaunch = document.getElementById("tour-launch");
+
+    const TOUR_STEPS = [
+      {
+        selector: null,
+        kicker: "Orientation",
+        title: "What this demo represents",
+        body:
+          "This is a compact agentic AI pipeline for e-commerce: first it retrieves relevant internal playbooks (RAG over FAISS), then specialized agents produce structured commercial decisions and an executive-style narrative—closer to a delivery artifact than a generic chat response.",
+      },
+      {
+        selector: "#tour-brand",
+        kicker: "Positioning",
+        title: "Solution framing",
+        body:
+          "The headline states the intent: combine retrieval-grounded context with multi-step reasoning so outputs read like something you could share with stakeholders—not unstructured prose.",
+      },
+      {
+        selector: "#tour-nav",
+        kicker: "For reviewers",
+        title: "APIs and observability",
+        body:
+          "OpenAPI documents the contract for POST /v1/decisions. Health and Readiness expose machine-friendly flags (for example, whether the knowledge index is loaded) without exposing secrets.",
+      },
+      {
+        selector: "#tour-input-panel",
+        kicker: "Inputs",
+        title: "Product brief",
+        body:
+          "Edit the sample SKU like a real merchandising brief: narrative, economics (price, cost, margin target), inventory posture, and guardrails. This mirrors how teams constrain recommendations in practice.",
+      },
+      {
+        selector: "#constraints",
+        kicker: "Guardrails",
+        title: "Constraints matter",
+        body:
+          "Each line encodes a business rule (e.g., promotional limits, brand adjacency). The agents are instructed to respect these inputs when forming recommendations.",
+      },
+      {
+        selector: "#tour-competitors",
+        kicker: "Context",
+        title: "Named competitors",
+        body:
+          "Optional competitor rows add competitive texture—useful for positioning and pricing narratives. You can add more rows before running the pipeline.",
+      },
+      {
+        selector: "#run",
+        kicker: "Action",
+        title: "Run the pipeline",
+        body:
+          "This calls POST /v1/decisions. A loading state appears while retrieval and agents execute. Output lands in the right-hand panel as an executive summary plus supporting analysis.",
+      },
+      {
+        selector: "#out",
+        kicker: "Deliverable",
+        title: "Structured output",
+        body:
+          "Results are rendered as cards (summary, signals, risks) with optional raw JSON for technical validation—similar to how you might separate client-facing text from traceability in delivery.",
+      },
+      {
+        selector: "footer",
+        kicker: "Close",
+        title: "You're set",
+        body:
+          "Explore OpenAPI for schemas and examples. In an interview, emphasize traceability (RAG hits), typed JSON contracts (Pydantic), and safe configuration (API keys only server-side). Click Finish or Skip anytime.",
+      },
+    ];
+
+    let tourIndex = 0;
+    let tourKeyHandler = null;
+
+    function clearTourSpotlights() {
+      document.querySelectorAll(".tour-spotlight").forEach((n) => n.classList.remove("tour-spotlight"));
+    }
+
+    function setBodyScrollForOverlays() {
+      const tourOn = tourRoot.classList.contains("is-open");
+      const loadOn = loadOverlay.classList.contains("is-open");
+      document.body.style.overflow = tourOn || loadOn ? "hidden" : "";
+    }
+
+    function renderTourStep() {
+      const step = TOUR_STEPS[tourIndex];
+      const total = TOUR_STEPS.length;
+      tourKicker.textContent = step.kicker || "Guided tour";
+      tourTitle.textContent = step.title;
+      tourCopy.textContent = step.body;
+      tourProgress.textContent = "Step " + (tourIndex + 1) + " of " + total;
+      tourBack.disabled = tourIndex === 0;
+      tourNext.textContent = tourIndex === total - 1 ? "Finish" : "Next";
+
+      clearTourSpotlights();
+      if (step.selector) {
+        const el = document.querySelector(step.selector);
+        if (el) {
+          el.classList.add("tour-spotlight");
+          el.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+        }
+      }
+      window.setTimeout(() => tourNext.focus(), 80);
+    }
+
+    function openTour() {
+      if (tourRoot.classList.contains("is-open")) return;
+      tourRoot.classList.add("is-open");
+      tourRoot.setAttribute("aria-hidden", "false");
+      tourIndex = 0;
+      renderTourStep();
+      setBodyScrollForOverlays();
+      tourKeyHandler = function (e) {
+        if (e.key === "Escape") closeTour();
+      };
+      window.addEventListener("keydown", tourKeyHandler);
+    }
+
+    function closeTour() {
+      if (!tourRoot.classList.contains("is-open")) return;
+      tourRoot.classList.remove("is-open");
+      tourRoot.setAttribute("aria-hidden", "true");
+      clearTourSpotlights();
+      if (tourKeyHandler) {
+        window.removeEventListener("keydown", tourKeyHandler);
+        tourKeyHandler = null;
+      }
+      try {
+        localStorage.setItem("aide_demo_tour_done", "1");
+      } catch (e) { /* ignore */ }
+      setBodyScrollForOverlays();
+    }
+
+    tourLaunch.addEventListener("click", openTour);
+    tourSkip.addEventListener("click", closeTour);
+    tourBack.addEventListener("click", () => {
+      if (tourIndex > 0) {
+        tourIndex -= 1;
+        renderTourStep();
+      }
+    });
+    tourNext.addEventListener("click", () => {
+      if (tourIndex < TOUR_STEPS.length - 1) {
+        tourIndex += 1;
+        renderTourStep();
+      } else {
+        closeTour();
+      }
+    });
 
     function showBanner(kind, text) {
       banner.className = "banner show " + (kind === "err" ? "err" : "warn");

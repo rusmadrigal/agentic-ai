@@ -13,6 +13,8 @@ def test_root_serves_demo_html():
     assert "Created by Rusben Madrigal" in r.text
     assert "load-overlay" in r.text
     assert "Collecting your data" in r.text
+    assert "Guided tour" in r.text
+    assert "tour-root" in r.text
 
 
 def test_readiness_json():

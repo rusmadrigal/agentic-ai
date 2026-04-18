@@ -4,7 +4,7 @@ Production-minded **FastAPI** service that turns product facts into **structured
 
 ## For reviewers (e.g. hiring panel)
 
-1. Run the API locally (see **Quickstart**), set `OPENAI_API_KEY` in `.env`, and open **`http://127.0.0.1:8000/`** — interactive demo with prefilled product + competitor, one-click “Generate decision brief”, and formatted output (plus raw JSON).
+1. Run the API locally (see **Quickstart**), set `OPENAI_API_KEY` in `.env`, and open **`http://127.0.0.1:8000/`** — interactive demo with prefilled product + competitor, **Guided tour** (top right) for a quick walkthrough, one-click “Generate decision brief”, and formatted output (plus raw JSON).
 2. Open **`/docs`** for OpenAPI: tagged operations, request **example** on `POST /v1/decisions`, and full schemas.
 3. **`GET /api/readiness`** — JSON flags for UI/load checks (`openai_configured`, `rag_ready`) without exposing secrets.
 
