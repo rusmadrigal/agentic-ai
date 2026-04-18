@@ -1159,6 +1159,10 @@
         <p class="header-value-prop">Pricing recommendations from live catalog and competitor inputs.</p>
       </div>
       <nav class="nav-links" id="tour-nav" aria-label="Primary">
+        <button type="button" class="nav-chip" id="nav-reload" title="Reload page" aria-label="Reload page">
+          <i data-lucide="refresh-cw"></i>
+          <span>Reload</span>
+        </button>
         <button type="button" class="nav-chip" id="tour-launch" title="Replay tour">
           <i data-lucide="map"></i>
           <span>Tour</span>
@@ -1435,6 +1439,7 @@
     const tourBack = document.getElementById("tour-back");
     const tourNext = document.getElementById("tour-next");
     const tourSkip = document.getElementById("tour-skip");
+    const navReload = document.getElementById("nav-reload");
     const tourLaunch = document.getElementById("tour-launch");
     const tourCard = document.getElementById("tour-card");
     const tourShadeFull = document.getElementById("tour-shade-full");
@@ -1748,6 +1753,11 @@
       setBodyScrollForOverlays();
     }
 
+    if (navReload) {
+      navReload.addEventListener("click", function () {
+        window.location.reload();
+      });
+    }
     tourLaunch.addEventListener("click", function () {
       tourIndex = 0;
       openTour();
