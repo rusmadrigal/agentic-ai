@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agentic AI Decision Engine — Demo</title>
+  <style>
+    :root {
+      --bg: #0c1222;
+      --panel: #141c2f;
+      --border: #243049;
+      --text: #e8edf7;
+      --muted: #8b9bb8;
+      --accent: #38bdf8;
+      --accent-dim: #0ea5e9;
+      --success: #34d399;
+      --warn: #fbbf24;
+      --err: #f87171;
+      --radius: 12px;
+      --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background: radial-gradient(1200px 600px at 10% -10%, #1e3a5f 0%, var(--bg) 55%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    a { color: var(--accent); }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 1.5rem;
+      backdrop-filter: blur(8px);
+      background: rgba(12, 18, 34, 0.85);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header .inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem 1.25rem;
+      justify-content: space-between;
+    }
+    h1 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+    .tagline { color: var(--muted); font-size: 0.9rem; margin: 0.15rem 0 0; max-width: 36rem; }
+    .nav-links { display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.88rem; }
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1rem 1.25rem 1.5rem;
+    }
+    .banner {
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.65rem 0.9rem;
+      border-radius: var(--radius);
+      font-size: 0.88rem;
+      display: none;
+    }
+    .layout-split {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
+    @media (min-width: 880px) {
+      .layout-split {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 1.25rem;
+      }
+    }
+    .banner.show { display: block; }
+    .banner.warn { background: rgba(251, 191, 36, 0.12); border: 1px solid rgba(251, 191, 36, 0.35); color: #fde68a; }
+    .banner.err { background: rgba(248, 113, 113, 0.1); border: 1px solid rgba(248, 113, 113, 0.35); color: #fecaca; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.1rem;
+      min-width: 0;
+    }
+    .panel h2 {
+      margin: 0 0 1rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 0.25rem; }
+    input, textarea, select {
+      width: 100%;
+      padding: 0.5rem 0.6rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #0f1628;
+      color: var(--text);
+      font: inherit;
+      margin-bottom: 0.65rem;
+    }
+    input:focus, textarea:focus { outline: 2px solid var(--accent-dim); outline-offset: 1px; }
+    textarea { min-height: 88px; resize: vertical; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    button.primary {
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 0.75rem 1rem;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent-dim), #0284c7);
+      color: #0c1222;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    button.primary:disabled { opacity: 0.55; cursor: not-allowed; }
+    button.ghost {
+      background: transparent;
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      padding: 0.4rem 0.65rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      margin-bottom: 0.75rem;
+    }
+    #out .cards {
+      max-height: min(70vh, 900px);
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+    .cards { display: flex; flex-direction: column; gap: 0.85rem; }
+    .card {
+      background: #101827;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.95rem 1rem;
+    }
+    .card h3 { margin: 0 0 0.5rem; font-size: 1.05rem; }
+    .card p { margin: 0; color: var(--muted); font-size: 0.92rem; }
+    .pill {
+      display: inline-block;
+      font-size: 0.72rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    details.raw { margin-top: 1rem; }
+    details.raw summary { cursor: pointer; color: var(--muted); font-size: 0.85rem; }
+    pre.raw {
+      margin: 0.5rem 0 0;
+      padding: 1rem;
+      background: #0a0f1a;
+      border-radius: 8px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      font-size: 0.75rem;
+      max-height: min(40vh, 280px);
+      border: 1px solid var(--border);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .empty-state { color: var(--muted); font-size: 0.9rem; padding: 1rem 0; }
+    footer {
+      text-align: center;
+      padding: 1.5rem 1rem 2rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.6;
+    }
+    footer .byline {
+      display: block;
+      margin-top: 0.35rem;
+      color: var(--text);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    /* —— Loading overlay (Stripe-inspired, no inner scroll) —— */
+    .load-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+      background: rgba(6, 10, 22, 0.72);
+      backdrop-filter: saturate(140%) blur(16px);
+      -webkit-backdrop-filter: saturate(140%) blur(16px);
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s ease, visibility 0.28s ease;
+      visibility: hidden;
+    }
+    .load-overlay.is-open {
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
+    }
+    .load-sheet {
+      width: min(100%, 22rem);
+      max-width: calc(100vw - 2rem);
+      border-radius: 1.125rem;
+      background: linear-gradient(165deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.99) 100%);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+        0 24px 80px -12px rgba(0, 0, 0, 0.55),
+        0 12px 32px -8px rgba(0, 0, 0, 0.35);
+      padding: 0;
+      overflow: hidden;
+      text-align: center;
+    }
+    .load-shimmer {
+      height: 3px;
+      width: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(56, 189, 248, 0.15) 20%,
+        rgba(56, 189, 248, 0.85) 50%,
+        rgba(56, 189, 248, 0.15) 80%,
+        transparent 100%
+      );
+      background-size: 200% 100%;
+      animation: load-shimmer 1.35s ease-in-out infinite;
+    }
+    @keyframes load-shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .load-sheet-inner {
+      padding: 1.65rem 1.5rem 1.5rem;
+    }
+    .load-brand {
+      margin: 0 0 0.35rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(148, 163, 184, 0.85);
+    }
+    .load-title {
+      margin: 0 0 0.5rem;
+      font-size: 1.125rem;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      color: #f8fafc;
+    }
+    .load-sub {
+      margin: 0 0 1.1rem;
+      font-size: 0.875rem;
+      line-height: 1.45;
+      color: rgba(148, 163, 184, 0.95);
+      min-height: 2.6em;
+    }
+    .load-dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.35rem;
+    }
+    .load-dots span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(56, 189, 248, 0.35);
+      animation: load-dot 1s ease-in-out infinite;
+    }
+    .load-dots span:nth-child(2) { animation-delay: 0.15s; }
+    .load-dots span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes load-dot {
+      0%, 80%, 100% { opacity: 0.35; transform: scale(0.92); }
+      40% { opacity: 1; transform: scale(1); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .load-shimmer, .load-dots span { animation: none; }
+      .load-shimmer { opacity: 0.6; }
+    }
+
+    /* Subtle scrollbars (output / JSON) — thin, not “Windows 95” */
+    #out .cards,
+    pre.raw {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(100, 116, 139, 0.35) transparent;
+    }
+    #out .cards::-webkit-scrollbar,
+    pre.raw::-webkit-scrollbar { width: 5px; height: 5px; }
+    #out .cards::-webkit-scrollbar-thumb,
+    pre.raw::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.35);
+      border-radius: 99px;
+    }
+    #out .cards::-webkit-scrollbar-track,
+    pre.raw::-webkit-scrollbar-track { background: transparent; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="inner">
+      <div>
+        <h1>Agentic AI Decision Engine</h1>
+        <p class="tagline">RAG + multi-step agents → structured commercial decisions for e-commerce (MVP).</p>
+      </div>
+      <nav class="nav-links">
+        <a href="/docs">OpenAPI (Swagger)</a>
+        <a href="/health">Health JSON</a>
+        <a href="/api/readiness">Readiness</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <div id="banner" class="banner" role="status" aria-live="polite"></div>
+
+    <div class="layout-split">
+    <section class="panel panel-input">
+      <h2>Product input</h2>
+      <label for="title">Title</label>
+      <input id="title" type="text" value="Merino crewneck sweater — limited colors" />
+      <label for="description">Description</label>
+      <textarea id="description">Mid-weight merino blend; strong email repeats; sizing content is thin on PDP.</textarea>
+      <div class="row2">
+        <div>
+          <label for="category">Category</label>
+          <input id="category" type="text" value="Apparel / Knitwear" />
+        </div>
+        <div>
+          <label for="sku">SKU (optional)</label>
+          <input id="sku" type="text" value="DEMO-001" />
+        </div>
+      </div>
+      <div class="row2">
+        <div>
+          <label for="price_usd">Price (USD)</label>
+          <input id="price_usd" type="number" step="0.01" value="89" />
+        </div>
+        <div>
+          <label for="cost_usd">Cost (USD)</label>
+          <input id="cost_usd" type="number" step="0.01" value="38" />
+        </div>
+      </div>
+      <div class="row2">
+        <div>
+          <label for="inventory_units">Inventory units</label>
+          <input id="inventory_units" type="number" value="4200" />
+        </div>
+        <div>
+          <label for="margin_target_pct">Margin target %</label>
+          <input id="margin_target_pct" type="number" step="0.1" value="52" />
+        </div>
+      </div>
+      <label for="constraints">Constraints (one per line)</label>
+      <textarea id="constraints">Avoid sitewide 20% coupons
+Premium adjacency on collection pages</textarea>
+      <h2 style="margin-top:1rem">Competitors</h2>
+      <div id="competitors"></div>
+      <button type="button" class="ghost" id="addComp">+ Add competitor</button>
+      <button type="button" class="primary" id="run">Generate decision brief</button>
+    </section>
+
+    <section class="panel panel-output" id="out">
+      <h2>Output</h2>
+      <div id="result" class="cards">
+        <p class="empty-state">Run the pipeline to see executive summary, analysis, and decisions here.</p>
+      </div>
+    </section>
+    </div>
+  </main>
+  <footer>
+    Built with FastAPI · FAISS RAG · OpenAI · For technical review
+    <span class="byline">Created by Rusben Madrigal</span>
+  </footer>
+
+  <div id="load-overlay" class="load-overlay" aria-hidden="true">
+    <div
+      class="load-sheet"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="load-title"
+      aria-describedby="load-sub"
+    >
+      <div class="load-shimmer" aria-hidden="true"></div>
+      <div class="load-sheet-inner">
+        <p class="load-brand">Decision engine</p>
+        <h2 id="load-title" class="load-title">Collecting your data</h2>
+        <p id="load-sub" class="load-sub" aria-live="polite" aria-atomic="true">Gathering product context and policy signals…</p>
+        <div class="load-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const banner = $("banner");
+    const loadOverlay = $("load-overlay");
+    const loadSub = $("load-sub");
+
+    const LOAD_STEPS = [
+      "Gathering product context and policy signals…",
+      "Retrieving relevant playbooks from the knowledge base…",
+      "Running analysis and structured decision agents…",
+      "Composing your executive-ready brief…",
+    ];
+    let loadStepTimer = null;
+
+    function openLoader() {
+      loadOverlay.classList.add("is-open");
+      loadOverlay.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      let i = 0;
+      loadSub.textContent = LOAD_STEPS[0];
+      loadStepTimer = window.setInterval(() => {
+        i = (i + 1) % LOAD_STEPS.length;
+        loadSub.textContent = LOAD_STEPS[i];
+      }, 2600);
+    }
+
+    function closeLoader() {
+      loadOverlay.classList.remove("is-open");
+      loadOverlay.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      if (loadStepTimer) {
+        window.clearInterval(loadStepTimer);
+        loadStepTimer = null;
+      }
+    }
+
+    function showBanner(kind, text) {
+      banner.className = "banner show " + (kind === "err" ? "err" : "warn");
+      banner.textContent = text;
+    }
+    function hideBanner() {
+      banner.className = "banner";
+      banner.textContent = "";
+    }
+
+    function compBlock(name, price, notes) {
+      const wrap = document.createElement("div");
+      wrap.style.marginBottom = "0.75rem";
+      wrap.innerHTML = `
+        <label>Competitor name</label>
+        <input type="text" class="c-name" value="${name.replace(/"/g, "&quot;")}" />
+        <div class="row2">
+          <div><label>Price USD</label><input type="number" step="0.01" class="c-price" value="${price}" /></div>
+          <div><label>Notes</label><input type="text" class="c-notes" value="${notes.replace(/"/g, "&quot;")}" /></div>
+        </div>`;
+      return wrap;
+    }
+
+    const compRoot = $("competitors");
+    compRoot.appendChild(compBlock("Nordic Knit Co. Crew", "78", "Frequent promos; stronger sizing content"));
+
+    $("addComp").onclick = () => compRoot.appendChild(compBlock("", "", ""));
+
+    function buildPayload() {
+      const constraints = $("constraints").value.split("\n").map((s) => s.trim()).filter(Boolean);
+      const comps = [];
+      compRoot.querySelectorAll(":scope > div").forEach((row) => {
+        const name = row.querySelector(".c-name").value.trim();
+        if (!name) return;
+        const price = row.querySelector(".c-price").value.trim();
+        const notes = row.querySelector(".c-notes").value.trim();
+        const o = { name, positioning_notes: notes };
+        if (price !== "") o.price_usd = parseFloat(price);
+        comps.push(o);
+      });
+      return {
+        product: {
+          sku: $("sku").value.trim() || null,
+          title: $("title").value.trim(),
+          description: $("description").value,
+          category: $("category").value.trim() || null,
+          price_usd: parseFloat($("price_usd").value),
+          cost_usd: $("cost_usd").value === "" ? null : parseFloat($("cost_usd").value),
+          inventory_units: $("inventory_units").value === "" ? null : parseInt($("inventory_units").value, 10),
+          margin_target_pct: $("margin_target_pct").value === "" ? null : parseFloat($("margin_target_pct").value),
+          constraints,
+        },
+        competitors: comps,
+      };
+    }
+
+    $("run").onclick = async () => {
+      hideBanner();
+      const btn = $("run");
+      const resEl = $("result");
+      btn.disabled = true;
+      openLoader();
+      try {
+        const r = await fetch("/v1/decisions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify(buildPayload()),
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          resEl.innerHTML = `<p class="empty-state">${r.status}: ${data.detail || JSON.stringify(data)}</p>`;
+          return;
+        }
+        const d = data.deliverable;
+        const es = d.executive_summary;
+        resEl.innerHTML = `
+          <div class="card"><span class="pill">Executive summary</span>
+            <h3>${escapeHtml(es.headline)}</h3>
+            <p><strong>Situation</strong><br>${escapeHtml(es.situation)}</p>
+            <p style="margin-top:0.75rem"><strong>Recommendation</strong><br>${escapeHtml(es.recommendation)}</p>
+            <ul style="margin:0.5rem 0 0 1.1rem;color:var(--muted);font-size:0.9rem">${(es.next_steps || []).map((s) => "<li>" + escapeHtml(s) + "</li>").join("")}</ul>
+          </div>
+          <div class="card"><span class="pill">Signals &amp; risks</span>
+            <p>${listSection("Market signals", d.analysis.market_signals)}</p>
+            <p>${listSection("Risks", d.analysis.risks)}</p>
+            <p>${listSection("Opportunities", d.analysis.opportunities)}</p>
+          </div>
+          <details class="raw"><summary>Full JSON response</summary><pre class="raw">${escapeHtml(JSON.stringify(data, null, 2))}</pre></details>`;
+      } catch (e) {
+        resEl.innerHTML = `<p class="empty-state">Network error: ${escapeHtml(String(e))}</p>`;
+      } finally {
+        closeLoader();
+        btn.disabled = false;
+      }
+    };
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+    function listSection(title, arr) {
+      if (!arr || !arr.length) return "";
+      return "<strong style=color:var(--text)>" + title + "</strong><br>" + arr.map((x) => "· " + escapeHtml(x)).join("<br>");
+    }
+
+    fetch("/api/readiness")
+      .then((r) => r.json())
+      .then((x) => {
+        const msgs = [];
+        if (!x.openai_configured) {
+          msgs.push("OpenAI API key is not configured — add OPENAI_API_KEY to .env and restart (POST /v1/decisions returns 503 until then).");
+        }
+        if (!x.rag_ready) {
+          msgs.push("RAG index not loaded — run: python scripts/build_index.py");
+        }
+        if (msgs.length) showBanner(!x.rag_ready ? "err" : "warn", msgs.join(" "));
+      })
+      .catch(() => {});
+  </script>
+</body>
+</html>

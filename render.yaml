@@ -1,0 +1,13 @@
+# Render Blueprint — https://render.com/docs/infrastructure-as-code
+# Create or link a Blueprint in the Render dashboard and point it at this file.
+services:
+  - type: web
+    name: agentic-ai-decision-engine
+    runtime: python
+    region: oregon
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt && python scripts/build_index.py
+    startCommand: uvicorn api.index:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false

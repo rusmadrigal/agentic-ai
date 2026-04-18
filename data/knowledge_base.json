@@ -1,0 +1,42 @@
+[
+  {
+    "id": "kb-margin-001",
+    "title": "Margin guardrails for promotional SKUs",
+    "text": "For hero SKUs with planned promotions, maintain contribution margin after discount of at least 18% unless inventory risk is high. If inventory cover exceeds 90 days, prioritize velocity over margin for 30 days, then revert."
+  },
+  {
+    "id": "kb-inv-002",
+    "title": "Inventory posture by velocity band",
+    "text": "Fast movers (top decile weekly units): target 21-35 days of cover. Medium movers: 35-56 days. Slow movers: reduce incoming POs immediately if cover exceeds 70 days; run targeted bundles before broad markdowns."
+  },
+  {
+    "id": "kb-cat-003",
+    "title": "Category positioning: premium adjacency",
+    "text": "When a SKU sits adjacent to premium brands, avoid deep list-price cuts; use limited-time offers and loyalty perks to protect price perception. Emphasize quality proof points in PDP copy."
+  },
+  {
+    "id": "kb-cx-004",
+    "title": "Returns-sensitive categories",
+    "text": "Apparel and footwear: size-fit content, comparison charts, and free exchanges materially reduce returns. If return rate exceeds category benchmark by 150bps, pause broad acquisition until PDP fixes ship."
+  },
+  {
+    "id": "kb-pricing-005",
+    "title": "Elasticity heuristics for mid-price bands",
+    "text": "In the $40-$120 band, a 10% list price reduction typically yields 15-25% unit lift if demand is elastic and competitors are within 5% on comparable items. Validate with a 14-day holdout test when traffic allows."
+  },
+  {
+    "id": "kb-promo-006",
+    "title": "Promotional ladder",
+    "text": "Prefer ladder promotions (tiered spend thresholds) over flat site-wide discounts to protect AOV. If clearance risk is present, use channel-specific codes before homepage banners."
+  },
+  {
+    "id": "kb-data-007",
+    "title": "Measurement minimums",
+    "text": "Any pricing or promo test requires pre-registered primary metric, minimum 7 days of stable traffic, and exclusion of major holidays unless the test explicitly targets holiday demand."
+  },
+  {
+    "id": "kb-compete-008",
+    "title": "Competitive response playbook",
+    "text": "If a primary competitor undercuts by more than 8% for more than 5 days, evaluate match-on-visibility SKUs only; otherwise improve bundle value and loyalty incentives to avoid race-to-bottom."
+  }
+]

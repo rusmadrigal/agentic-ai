@@ -1,0 +1,42 @@
+[
+  {
+    "product": {
+      "sku": "SKU-4412",
+      "title": "Merino crewneck sweater — limited colors",
+      "description": "Mid-weight merino blend, positioned between mass market and premium knitwear. Strong repeat purchase in email channel; PDP lacks detailed sizing guidance.",
+      "category": "Apparel / Knitwear",
+      "price_usd": 89.0,
+      "cost_usd": 38.0,
+      "inventory_units": 4200,
+      "margin_target_pct": 52,
+      "constraints": ["Avoid sitewide 20% coupons", "Premium adjacency on collection pages"]
+    },
+    "competitors": [
+      {
+        "name": "Nordic Knit Co. Crew",
+        "price_usd": 78.0,
+        "positioning_notes": "Frequent 15% promos; stronger size guide."
+      }
+    ]
+  },
+  {
+    "product": {
+      "sku": "SKU-9081",
+      "title": "Cordless stick vacuum (Gen 2)",
+      "description": "Competitive set moved pricing down 6-10% in the last two weeks. Our attachment ecosystem is differentiated but not obvious above the fold.",
+      "category": "Home / Floor care",
+      "price_usd": 349.0,
+      "cost_usd": 198.0,
+      "inventory_units": 950,
+      "margin_target_pct": 38,
+      "constraints": ["Maintain MAP compliance", "Do not degrade attachment attach rate"]
+    },
+    "competitors": [
+      {
+        "name": "RivalStick Pro",
+        "price_usd": 329.0,
+        "positioning_notes": "Bundled extra battery last month."
+      }
+    ]
+  }
+]

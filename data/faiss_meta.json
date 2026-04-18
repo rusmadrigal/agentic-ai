@@ -1,0 +1,33 @@
+{
+  "ids": [
+    "kb-margin-001",
+    "kb-inv-002",
+    "kb-cat-003",
+    "kb-cx-004",
+    "kb-pricing-005",
+    "kb-promo-006",
+    "kb-data-007",
+    "kb-compete-008"
+  ],
+  "titles": [
+    "Margin guardrails for promotional SKUs",
+    "Inventory posture by velocity band",
+    "Category positioning: premium adjacency",
+    "Returns-sensitive categories",
+    "Elasticity heuristics for mid-price bands",
+    "Promotional ladder",
+    "Measurement minimums",
+    "Competitive response playbook"
+  ],
+  "texts": [
+    "For hero SKUs with planned promotions, maintain contribution margin after discount of at least 18% unless inventory risk is high. If inventory cover exceeds 90 days, prioritize velocity over margin for 30 days, then revert.",
+    "Fast movers (top decile weekly units): target 21-35 days of cover. Medium movers: 35-56 days. Slow movers: reduce incoming POs immediately if cover exceeds 70 days; run targeted bundles before broad markdowns.",
+    "When a SKU sits adjacent to premium brands, avoid deep list-price cuts; use limited-time offers and loyalty perks to protect price perception. Emphasize quality proof points in PDP copy.",
+    "Apparel and footwear: size-fit content, comparison charts, and free exchanges materially reduce returns. If return rate exceeds category benchmark by 150bps, pause broad acquisition until PDP fixes ship.",
+    "In the $40-$120 band, a 10% list price reduction typically yields 15-25% unit lift if demand is elastic and competitors are within 5% on comparable items. Validate with a 14-day holdout test when traffic allows.",
+    "Prefer ladder promotions (tiered spend thresholds) over flat site-wide discounts to protect AOV. If clearance risk is present, use channel-specific codes before homepage banners.",
+    "Any pricing or promo test requires pre-registered primary metric, minimum 7 days of stable traffic, and exclusion of major holidays unless the test explicitly targets holiday demand.",
+    "If a primary competitor undercuts by more than 8% for more than 5 days, evaluate match-on-visibility SKUs only; otherwise improve bundle value and loyalty incentives to avoid race-to-bottom."
+  ],
+  "dim": 1536
+}
