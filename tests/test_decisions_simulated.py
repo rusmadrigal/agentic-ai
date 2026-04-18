@@ -1,8 +1,10 @@
+import json
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
 from api.index import app
+from app.core.config import settings
 
 _DUMMY_JSON = {
     "id": 99,
@@ -30,12 +32,14 @@ def test_post_decisions_with_product_id_uses_dummyjson():
                 json={
                     "product_id": 99,
                     "competitors": [{"title": "Brand A", "price": 100}, {"title": "Brand B", "price": 130}],
+                    "use_llm": False,
                 },
             )
 
     assert r.status_code == 200
     body = r.json()
     assert body["source"] == "dummyjson API"
+    assert body["decision_engine"] == "simulated"
     assert body["product"]["title"] == "Test Product"
     assert body["product"]["price_usd"] == 120.5
     assert len(body["competitors"]) == 2
@@ -59,11 +63,13 @@ def test_post_decisions_manual_product():
                     "constraints": [],
                 },
                 "competitors": [{"title": "Other", "price": 55}],
+                "use_llm": False,
             },
         )
     assert r.status_code == 200
     body = r.json()
     assert body["source"] == "manual"
+    assert body["decision_engine"] == "simulated"
     assert body["product"]["title"] == "Manual SKU"
     assert body["decisions"]["reasoning"]
 
@@ -79,3 +85,50 @@ def test_external_product_endpoint():
             r = client.get("/api/external-products/99")
     assert r.status_code == 200
     assert r.json()["title"] == "Test Product"
+
+
+def test_post_decisions_use_llm_without_openai_key_returns_400():
+    with TestClient(app) as client:
+        with patch.object(settings, "openai_api_key", None):
+            r = client.post(
+                "/v1/decisions",
+                json={
+                    "product_id": 1,
+                    "competitors": [{"title": "A", "price": 10}],
+                    "use_llm": True,
+                },
+            )
+    assert r.status_code == 400
+
+
+def test_post_decisions_use_llm_openai_path_mocked():
+    llm_json = {
+        "pricing_strategy": "competitive_parity",
+        "recommended_price": 88.0,
+        "promotion": "Bundle with accessories",
+        "inventory_action": "Maintain 4-week cover",
+        "reasoning": "Peers cluster around 90; slight undercut wins share.",
+        "confidence": "medium",
+    }
+    with TestClient(app) as client:
+        with patch.object(settings, "openai_api_key", "sk-test-not-real"):
+            with patch("api.index.generate_ai_decision", return_value=json.dumps(llm_json)):
+                with patch("app.integrations.dummyjson.requests.get") as mock_get:
+                    mock_resp = mock_get.return_value
+                    mock_resp.status_code = 200
+                    mock_resp.json.return_value = _DUMMY_JSON
+                    mock_resp.raise_for_status = lambda: None
+
+                    r = client.post(
+                        "/v1/decisions",
+                        json={
+                            "product_id": 99,
+                            "competitors": [{"title": "Brand A", "price": 100}],
+                            "use_llm": True,
+                        },
+                    )
+    assert r.status_code == 200
+    body = r.json()
+    assert body["decision_engine"] == "llm"
+    assert body["decisions"]["recommended_price"] == 88.0
+    assert body["decisions"]["confidence"] == "medium"

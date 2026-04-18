@@ -234,12 +234,12 @@
       min-height: 0;
       overflow: hidden;
     }
-    .cards { display: flex; flex-direction: column; gap: 1.15rem; }
+    .cards { display: flex; flex-direction: column; gap: 1.25rem; }
     .card {
       background: #101827;
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 1.1rem 1.15rem;
+      padding: 1.25rem 1.35rem;
       box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
     }
     .dashboard-head h2 {
@@ -264,6 +264,96 @@
       background: rgba(56, 189, 248, 0.15);
       color: var(--accent);
       margin-bottom: 0.5rem;
+    }
+    .decision-hero-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem;
+      margin-bottom: 0.75rem;
+    }
+    .pill--engine {
+      background: rgba(52, 211, 153, 0.14);
+      color: #6ee7b7;
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      margin-bottom: 0;
+    }
+    .pill--sim {
+      background: rgba(148, 163, 184, 0.12);
+      color: #cbd5e1;
+      border: 1px solid rgba(100, 116, 139, 0.4);
+      margin-bottom: 0;
+    }
+    .confidence-badge {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 0;
+      line-height: 1.2;
+    }
+    .confidence-badge--high {
+      color: #6ee7b7;
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      background: rgba(52, 211, 153, 0.14);
+    }
+    .confidence-badge--medium {
+      color: #fde68a;
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      background: rgba(251, 191, 36, 0.14);
+    }
+    .confidence-badge--low {
+      color: #fca5a5;
+      border: 1px solid rgba(248, 113, 113, 0.45);
+      background: rgba(248, 113, 113, 0.1);
+    }
+    .engine-toggle {
+      margin: 0.5rem 0 0;
+      padding: 0.65rem 0.75rem;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .engine-toggle-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      align-items: center;
+    }
+    .engine-toggle label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin: 0;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 0.84rem;
+    }
+    .engine-toggle input {
+      width: auto;
+      margin: 0;
+      accent-color: var(--accent-dim);
+    }
+    .engine-toggle-hint {
+      margin: 0.45rem 0 0;
+      font-size: 0.74rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .engine-toggle-hint .engine-hint-arch {
+      display: block;
+      color: rgba(148, 163, 184, 0.9);
+    }
+    .engine-toggle-hint .engine-hint-api:not(:empty) {
+      display: block;
+      margin-top: 0.4rem;
+      color: rgba(251, 191, 36, 0.92);
+      font-size: 0.72rem;
     }
     details.raw { margin-top: 1rem; }
     details.raw summary { cursor: pointer; color: var(--muted); font-size: 0.85rem; }
@@ -369,8 +459,16 @@
       font-weight: 600;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: rgba(148, 163, 184, 0.95);
+      color: rgba(125, 211, 252, 0.88);
       margin: 0 0 0.35rem;
+    }
+    .header-value-prop {
+      margin: 0.15rem 0 0;
+      font-size: 0.92rem;
+      color: rgba(148, 163, 184, 0.96);
+      max-width: 38rem;
+      line-height: 1.45;
+      font-weight: 450;
     }
     button.secondary {
       width: 100%;
@@ -403,7 +501,7 @@
       background: linear-gradient(165deg, #152036 0%, #101827 100%);
       border: 1px solid rgba(56, 189, 248, 0.2);
       border-radius: 12px;
-      padding: 1.1rem 1.15rem;
+      padding: 1.25rem 1.35rem;
       margin-bottom: 1rem;
       box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
     }
@@ -439,7 +537,7 @@
       background: linear-gradient(165deg, rgba(14, 165, 233, 0.12) 0%, #101827 45%);
       border: 1px solid rgba(56, 189, 248, 0.45) !important;
       box-shadow: 0 8px 36px rgba(14, 165, 233, 0.15), 0 0 0 1px rgba(56, 189, 248, 0.08) inset;
-      padding: 1.35rem 1.25rem 1.15rem !important;
+      padding: 1.25rem 1.35rem 1.2rem !important;
     }
     .decision-hero-kpi {
       margin-bottom: 1rem;
@@ -545,6 +643,13 @@
       line-height: 1.45;
       padding-top: 0.85rem;
       border-top: 1px solid rgba(51, 65, 85, 0.6);
+    }
+    .decision-footnote {
+      margin: 0.65rem 0 0;
+      font-size: 0.72rem;
+      color: rgba(148, 163, 184, 0.72);
+      line-height: 1.5;
+      letter-spacing: 0.02em;
     }
     .insight-card {
       border-left: 3px solid rgba(56, 189, 248, 0.65);
@@ -981,8 +1086,11 @@
   <header>
     <div class="inner">
       <div id="tour-brand">
-        <p class="mvp-label">AI Decision Engine (MVP - Simulated Logic)</p>
+        <p class="mvp-label">AI Pricing Decision Engine (LLM-powered)</p>
         <h1>Agentic AI Decision Engine</h1>
+        <p class="header-value-prop">
+          Transforms product and competitor data into actionable pricing decisions using AI.
+        </p>
       </div>
       <nav class="nav-links" id="tour-nav" aria-label="Primary">
         <button type="button" class="nav-chip" id="tour-launch" title="Replay tour">
@@ -1024,13 +1132,13 @@
           </div>
           <p class="hint" id="fetch-hint">Loads public product JSON from dummyjson.com — server-side fetch for the demo.</p>
           <div id="product-preview" class="product-hero-card hidden" aria-live="polite">
-            <span class="data-source-badge" id="pv-data-badge">Data source: DummyJSON API</span>
+            <span class="data-source-badge" id="pv-data-badge">Data source: DummyJSON API (External Data Simulation)</span>
             <div class="product-hero-title" id="pv-hero-title">—</div>
             <div class="product-hero-price" id="pv-hero-price">—</div>
             <div class="product-hero-meta">
               <span id="pv-hero-cat">—</span><span class="meta-sep">·</span><span id="pv-hero-stock">Stock: —</span>
             </div>
-            <div class="product-hero-foot" id="pv-hero-source">Source: DummyJSON (ID: —)</div>
+            <div class="product-hero-foot" id="pv-hero-source">Source: DummyJSON API (External Data Simulation) (ID: —)</div>
           </div>
 
           <fieldset class="manual-product" id="manual-fieldset">
@@ -1056,8 +1164,30 @@
 
           <h2 id="tour-competitors">Competitors</h2>
           <p class="hint">Add peer offers to benchmark list price (title + price).</p>
+          <button type="button" class="secondary" id="fetch-example-competitors" style="margin-bottom: 0.65rem">
+            Load example competitors (DummyJSON)
+          </button>
+          <p class="hint" id="fetch-competitors-hint" style="margin-top: 0">
+            On page load we fill peers from DummyJSON for the current <strong>Product ID</strong> (same catalog, same category when possible). Use the button to reload after you change the ID.
+          </p>
           <div id="competitors"></div>
           <button type="button" class="ghost" id="addComp">+ Add competitor</button>
+          <div class="engine-toggle" id="engine-toggle" aria-label="Decision engine">
+            <div class="engine-toggle-row">
+              <label>
+                <input type="radio" name="decision-engine" value="llm" id="engine-llm" />
+                Use AI (LLM)
+              </label>
+              <label>
+                <input type="radio" name="decision-engine" value="sim" id="engine-sim" checked />
+                Simulated logic
+              </label>
+            </div>
+            <p class="engine-toggle-hint">
+              <span class="engine-hint-arch">LLM mode uses AI reasoning. Simulated mode uses deterministic rules.</span>
+              <span id="engine-hint" class="engine-hint-api" role="status"></span>
+            </p>
+          </div>
         </div>
         <div class="panel-input-footer">
           <button type="button" class="primary cta-pricing" id="run">
@@ -1070,10 +1200,13 @@
     </div>
 
     <div class="layout-column">
-    <section class="panel panel-output dashboard-out" id="out" aria-label="Pricing dashboard">
+    <section class="panel panel-output dashboard-out" id="out" aria-label="Decision Intelligence Layer">
       <div class="dashboard-head">
-        <h2>Pricing dashboard</h2>
-        <p class="dashboard-deck-hint">AI-generated recommendation based on competitive benchmarking. (Simulated rules in this MVP.)</p>
+        <h2>Decision Intelligence Layer</h2>
+        <p class="dashboard-deck-hint">
+          Executive-ready outputs: recommended price, strategy, confidence, and rationale — powered by LLM reasoning or
+          deterministic rules for side-by-side comparison.
+        </p>
       </div>
       <div id="result" class="cards dashboard-results">
         <div class="dashboard-empty" role="status" aria-live="polite">
@@ -1170,17 +1303,24 @@
       "Applying simulated pricing & inventory rules…",
       "Preparing your decision summary…",
     ];
+    const LOAD_STEPS_LLM = [
+      "Analyzing market conditions…",
+      "Synthesizing competitor and catalog signals…",
+      "Drafting pricing and promotion recommendation…",
+      "Preparing your decision summary…",
+    ];
     let loadStepTimer = null;
 
-    function openLoader() {
+    function openLoader(mode) {
+      const steps = mode === "llm" ? LOAD_STEPS_LLM : LOAD_STEPS;
       loadOverlay.classList.add("is-open");
       loadOverlay.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
       let i = 0;
-      loadSub.textContent = LOAD_STEPS[0];
+      loadSub.textContent = steps[0];
       loadStepTimer = window.setInterval(() => {
-        i = (i + 1) % LOAD_STEPS.length;
-        loadSub.textContent = LOAD_STEPS[i];
+        i = (i + 1) % steps.length;
+        loadSub.textContent = steps[i];
       }, 2600);
     }
 
@@ -1261,7 +1401,7 @@
         kicker: "Step 5 · Decide",
         title: "Get Pricing Recommendation",
         body:
-          "Runs POST /v1/decisions. Your pricing dashboard shows the decision hero, key insight, product context, and competitive price bars.",
+          "Runs POST /v1/decisions. The Decision Intelligence Layer shows the decision hero, key insight, product context, and competitive price bars.",
         focus: true,
       },
       {
@@ -1608,9 +1748,9 @@
       wrap.innerHTML = `
         <button type="button" class="remove-comp" aria-label="Remove competitor">×</button>
         <label>Title</label>
-        <input type="text" class="c-title" value="${String(title).replace(/"/g, "&quot;")}" />
+        <input type="text" class="c-title" value="${escapeHtml(String(title))}" />
         <label>Price (USD)</label>
-        <input type="number" class="c-price" step="0.01" min="0" value="${price === "" ? "" : price}" />`;
+        <input type="number" class="c-price" step="0.01" min="0" value="${price === "" ? "" : escapeHtml(String(price))}" />`;
       wrap.querySelector(".remove-comp").onclick = function () {
         wrap.remove();
         if (!compRoot.querySelector(".comp-row")) compRoot.appendChild(compBlock("", ""));
@@ -1622,7 +1762,49 @@
     compRoot.appendChild(compBlock("Brand A", "100"));
     compRoot.appendChild(compBlock("Brand B", "130"));
 
+    async function loadExampleCompetitorsFromServer(showErrors) {
+      const pid = parseInt($("product-id").value, 10);
+      if (!pid || pid < 1) {
+        if (showErrors) showBanner("err", "Enter a valid Product ID first (same as Fetch product).");
+        return false;
+      }
+      const btn = $("fetch-example-competitors");
+      if (btn) btn.disabled = true;
+      try {
+        const r = await fetch("/api/example-competitors/" + pid + "?limit=3", {
+          headers: { Accept: "application/json" },
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          if (showErrors) {
+            const msg = typeof data.detail === "string" ? data.detail : JSON.stringify(data.detail || data);
+            showBanner("err", String(msg));
+          }
+          return false;
+        }
+        const list = data.competitors || [];
+        compRoot.innerHTML = "";
+        list.forEach(function (c) {
+          compRoot.appendChild(compBlock(c.title, String(c.price)));
+        });
+        if (!compRoot.querySelector(".comp-row")) {
+          compRoot.appendChild(compBlock("", ""));
+        }
+        return true;
+      } catch (e) {
+        if (showErrors) showBanner("err", String(e));
+        return false;
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
     $("addComp").onclick = () => compRoot.appendChild(compBlock("", ""));
+
+    $("fetch-example-competitors").onclick = async function () {
+      hideBanner();
+      await loadExampleCompetitorsFromServer(true);
+    };
 
     function collectCompetitors() {
       const comps = [];
@@ -1641,6 +1823,7 @@
       const manualTitle = $("manual-title").value.trim();
       const manualPriceRaw = $("manual-price").value.trim();
       const comps = collectCompetitors();
+      const useLlm = $("engine-llm").checked && !$("engine-llm").disabled;
       if (manualTitle && manualPriceRaw !== "") {
         const price = parseFloat(manualPriceRaw);
         if (Number.isNaN(price)) throw new Error("Manual price must be a number.");
@@ -1659,11 +1842,29 @@
             constraints: [],
           },
           competitors: comps,
+          use_llm: useLlm,
         };
       }
       const pid = parseInt($("product-id").value, 10);
       if (!pid || pid < 1) throw new Error("Enter a valid Product ID (or use manual product).");
-      return { product_id: pid, competitors: comps };
+      return { product_id: pid, competitors: comps, use_llm: useLlm };
+    }
+
+    function syncEngineToggleFromReadiness(data) {
+      const llm = $("engine-llm");
+      const sim = $("engine-sim");
+      const hint = $("engine-hint");
+      if (!data || !data.openai_configured) {
+        llm.disabled = true;
+        sim.checked = true;
+        hint.textContent =
+          "OpenAI API key is not configured — add OPENAI_API_KEY for LLM mode. Simulated mode remains available.";
+      } else {
+        llm.disabled = false;
+        llm.checked = true;
+        sim.checked = false;
+        hint.textContent = "";
+      }
     }
 
     $("fetch-product").onclick = async function () {
@@ -1685,7 +1886,7 @@
         }
         const resolvedId = data.id != null ? data.id : pid;
         $("pv-data-badge").style.display = "inline-block";
-        $("pv-data-badge").textContent = "Data source: DummyJSON API";
+        $("pv-data-badge").textContent = "Data source: DummyJSON API (External Data Simulation)";
         $("pv-hero-title").textContent = data.title || "—";
         $("pv-hero-price").textContent =
           data.price_usd != null ? "$" + String(data.price_usd) : "—";
@@ -1693,7 +1894,9 @@
         $("pv-hero-stock").textContent =
           data.stock != null ? "Stock: " + String(data.stock) : "Stock: —";
         $("pv-hero-source").textContent =
-          "Source: DummyJSON (ID: " + (resolvedId != null ? String(resolvedId) : "—") + ")";
+          "Source: DummyJSON API (External Data Simulation) (ID: " +
+          (resolvedId != null ? String(resolvedId) : "—") +
+          ")";
         $("product-preview").classList.remove("hidden");
       } catch (e) {
         showBanner("err", String(e));
@@ -1714,7 +1917,8 @@
         return;
       }
       btn.disabled = true;
-      openLoader();
+      const useLlmRun = $("engine-llm").checked && !$("engine-llm").disabled;
+      openLoader(useLlmRun ? "llm" : "sim");
       try {
         const r = await fetch("/v1/decisions", {
           method: "POST",
@@ -1733,14 +1937,36 @@
         const strategyLabel = humanizeStrategy(dec.pricing_strategy);
         const sourceLine =
           data.source === "dummyjson API"
-            ? "DummyJSON API" + (p.id != null ? " · ID " + escapeHtml(String(p.id)) : "")
-            : escapeHtml(data.source);
+            ? "DummyJSON API (External Data Simulation)" +
+              (p.id != null ? " · ID " + escapeHtml(String(p.id)) : "")
+            : "Manual product entry (user-supplied fields)";
         const barsHtml =
           comps.length > 0
             ? buildPriceBars(p.price_usd, comps)
             : '<p class="hint" style="margin:0">Add competitors to see a relative price chart.</p>';
+        const isLlm = data.decision_engine === "llm";
+        const enginePill = isLlm
+          ? '<span class="pill pill--engine">AI-generated decision (LLM-powered)</span>'
+          : '<span class="pill pill--sim">Rule-based decision (simulated)</span>';
+        const conf = dec.confidence;
+        const confOk = conf === "low" || conf === "medium" || conf === "high";
+        const confKey = confOk ? conf : isLlm ? "medium" : "high";
+        const confLabels = { high: "HIGH CONFIDENCE", medium: "MEDIUM CONFIDENCE", low: "LOW CONFIDENCE" };
+        const confBadge =
+          '<span class="confidence-badge confidence-badge--' +
+          escapeHtml(confKey) +
+          '">' +
+          confLabels[confKey] +
+          "</span>";
+        const microcopy = isLlm
+          ? "AI-generated decision using LLM reasoning over product and competitive data."
+          : "Rule-based synthesis for repeatable benchmarking. Enable LLM mode when OpenAI is configured for generative reasoning.";
         resEl.innerHTML = `
           <div class="card decision-hero">
+            <div class="decision-hero-top">
+              ${enginePill}
+              ${confBadge}
+            </div>
             <span class="pill">Recommended action</span>
             <div class="decision-hero-kpi">
               <span class="kpi-label"><i data-lucide="circle-dollar-sign"></i><span>Recommended price</span></span>
@@ -1758,7 +1984,8 @@
                 <div class="action-sub">${escapeHtml(dec.inventory_action)}</div>
               </div>
             </div>
-            <p class="decision-microcopy">AI-generated recommendation based on competitive benchmarking.</p>
+            <p class="decision-microcopy">${escapeHtml(microcopy)}</p>
+            <p class="decision-footnote">Designed for decision support in pricing and go-to-market strategies.</p>
           </div>
           <div class="card insight-card">
             <div class="insight-label"><i data-lucide="lightbulb"></i><span>Key insight</span></div>
@@ -1823,20 +2050,28 @@
     }
     maybeAutoStartTour();
 
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", refreshIcons);
-    } else {
+    function onDomReadyInit() {
       refreshIcons();
+      loadExampleCompetitorsFromServer(false);
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", onDomReadyInit);
+    } else {
+      onDomReadyInit();
     }
 
     fetch("/api/readiness")
       .then((r) => r.json())
       .then((x) => {
+        syncEngineToggleFromReadiness(x);
+        refreshIcons();
         if (!x.rag_ready) {
           showBanner("warn", "Optional: run python scripts/build_index.py if you plan to use the RAG + agent stack later.");
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        syncEngineToggleFromReadiness(null);
+      });
   </script>
 </body>
 </html>

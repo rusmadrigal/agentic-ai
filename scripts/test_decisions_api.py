@@ -19,9 +19,10 @@ import requests
 DEFAULT_BASE = "http://127.0.0.1:8000"
 REQUEST_TIMEOUT_SEC = 120
 
-# Simulated decision API: DummyJSON product_id + competitor title/price
+# Default: rule-based path (no OpenAI call). Omit use_llm or set true to exercise the LLM when configured.
 SAMPLE_PAYLOAD: dict[str, Any] = {
     "product_id": 1,
+    "use_llm": False,
     "competitors": [
         {"title": "Brand A", "price": 100},
         {"title": "Brand B", "price": 130},
@@ -65,7 +66,7 @@ def main() -> int:
     if not response.ok:
         return 1
 
-    required_keys = ("product", "competitors", "decisions", "source")
+    required_keys = ("product", "competitors", "decisions", "source", "decision_engine")
     missing = [k for k in required_keys if k not in body]
     if missing:
         print(f"\nWarning: expected top-level keys missing: {missing}", file=sys.stderr)

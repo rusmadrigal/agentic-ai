@@ -1,7 +1,7 @@
 import sys
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
 _ROOT = Path(__file__).resolve().parent.parent
 if str(_ROOT) not in sys.path:
@@ -14,11 +14,16 @@ from starlette.concurrency import run_in_threadpool
 
 from app.core.config import settings
 from app.core.logging import configure_logging, get_logger
-from app.integrations.dummyjson import fetch_product_from_api, normalize_dummyjson_product
+from app.integrations.dummyjson import (
+    fetch_example_competitors,
+    fetch_product_from_api,
+    normalize_dummyjson_product,
+)
 from app.models.schemas import Product
-from app.models.simulated import SimulatedDecisionRequest, SimulatedDecisionResponse
+from app.models.simulated import SimulatedDecisionsBlock, SimulatedDecisionRequest, SimulatedDecisionResponse
 from app.rag.retriever import Retriever
 from app.services.orchestrator import DecisionOrchestrator
+from app.services.ai_decision_engine import generate_ai_decision, parse_ai_response
 from app.services.rule_decisions import compute_simulated_decisions
 
 configure_logging()
@@ -29,11 +34,11 @@ _orchestrator: Optional[DecisionOrchestrator] = None
 _DEMO_HTML_PATH = _ROOT / "app" / "static" / "demo.html"
 
 _DESCRIPTION = """
-**Decision flow:** ingest product context (DummyJSON or manual) → **simulated** pricing / promotion / inventory rules (MVP).
+**Decision flow:** ingest product context (DummyJSON or manual) → **LLM pricing strategist** (when `OPENAI_API_KEY` is set and `use_llm` is true or omitted) or **rule-based** simulated logic.
 
-Optional **RAG + OpenAI agents** remain in the codebase for extension; this demo highlights external data and structured business output.
+Structured JSON always includes pricing strategy, recommended price, promotion, inventory action, and reasoning. Optional **RAG + agents** remain for extension.
 
-Open **`/`** for the interactive workflow, or **POST /v1/decisions** with `product_id` or `product` + competitor prices.
+Open **`/`** for the interactive workflow, or **POST /v1/decisions** with `product_id` or `product`, competitor prices, and optional `use_llm`.
 """.strip()
 
 _TAGS_METADATA = [
@@ -43,7 +48,7 @@ _TAGS_METADATA = [
     },
     {
         "name": "decisions",
-        "description": "Simulated commercial decisions (pricing, promo, inventory).",
+        "description": "Commercial decisions (LLM or rule-based): pricing, promo, inventory.",
     },
     {
         "name": "ops",
@@ -54,6 +59,23 @@ _TAGS_METADATA = [
         "description": "External catalog data (DummyJSON).",
     },
 ]
+
+
+def _resolve_use_llm_flag(requested: Optional[bool]) -> bool:
+    """True = OpenAI path; False = rules. None = auto from settings."""
+    if requested is False:
+        return False
+    if requested is True:
+        if not settings.openai_api_key:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "OpenAI is not configured (missing OPENAI_API_KEY). "
+                    "Set the key or pass use_llm=false for rule-based decisions."
+                ),
+            )
+        return True
+    return bool(settings.openai_api_key)
 
 
 def _manual_product_snapshot(p: Product) -> dict[str, Any]:
@@ -79,10 +101,10 @@ async def lifespan(app: FastAPI):
     global _orchestrator
     configure_logging()
     if settings.openai_api_key:
-        logger.info("OPENAI_API_KEY is configured (optional for simulated /v1/decisions)")
+        logger.info("OPENAI_API_KEY is configured — POST /v1/decisions uses the LLM by default when use_llm is omitted.")
     else:
         logger.warning(
-            "OPENAI_API_KEY is not set; optional for LLM extensions. Simulated decisions do not require it.",
+            "OPENAI_API_KEY is not set — /v1/decisions uses simulated logic unless use_llm=false is sent explicitly.",
         )
     try:
         retriever = Retriever.from_default_paths()
@@ -132,11 +154,31 @@ async def get_external_product(product_id: int) -> dict[str, Any]:
     return normalize_dummyjson_product(raw)
 
 
+@app.get("/api/example-competitors/{product_id}", tags=["external"])
+async def get_example_competitors(product_id: int, limit: int = 3) -> dict[str, Any]:
+    """
+    Suggest peer rows (title + USD price) from other DummyJSON products — same category when possible.
+
+    For demo / meeting use; replaces hand-typed competitor examples.
+    """
+    if limit < 1:
+        limit = 1
+    if limit > 8:
+        limit = 8
+    rows = await run_in_threadpool(fetch_example_competitors, product_id, limit)
+    return {
+        "product_id": product_id,
+        "competitors": rows,
+        "source": "dummyjson",
+    }
+
+
 @app.get("/api/readiness", tags=["ops"])
 async def readiness() -> dict:
     """Signals for UI banners and load balancers (no secrets)."""
     return {
         "openai_configured": bool(settings.openai_api_key),
+        "llm_decisions_ready": bool(settings.openai_api_key),
         "rag_ready": _orchestrator is not None,
         "embedding_mode": settings.embedding_mode,
         "simulated_decisions_ready": True,
@@ -156,14 +198,17 @@ async def health() -> dict:
     "/v1/decisions",
     response_model=SimulatedDecisionResponse,
     tags=["decisions"],
-    summary="Generate simulated commercial decisions",
-    response_description="Product context, competitor list, and rule-based pricing / promo / inventory actions.",
+    summary="Generate commercial decisions (LLM or simulated)",
+    response_description="Product context, competitor list, and structured pricing / promo / inventory decisions.",
 )
 async def create_decision(payload: SimulatedDecisionRequest) -> SimulatedDecisionResponse:
     """
     Provide **`product_id`** to pull live data from DummyJSON, or a manual **`product`** object.
-    Competitors use **`title`** + **`price`** (USD). No OpenAI key required for this endpoint.
+    Competitors use **`title`** + **`price`** (USD).
+
+    **`use_llm`:** `true` requires `OPENAI_API_KEY`. `false` forces rule-based logic. Omitted uses the LLM when a key is configured.
     """
+    use_llm = _resolve_use_llm_flag(payload.use_llm)
     comp_tuples = [(c.title, float(c.price)) for c in payload.competitors]
     competitors_out: list[dict[str, Any]] = [
         {"title": c.title, "price": float(c.price)} for c in payload.competitors
@@ -185,10 +230,26 @@ async def create_decision(payload: SimulatedDecisionRequest) -> SimulatedDecisio
     if not isinstance(stock, (int, type(None))):
         stock = None
 
-    decisions = compute_simulated_decisions(price, stock, comp_tuples)
+    if use_llm:
+        try:
+            raw_text = await run_in_threadpool(generate_ai_decision, product_dict, competitors_out)
+            parsed = parse_ai_response(raw_text, fallback_price=price)
+            decisions = SimulatedDecisionsBlock.model_validate(parsed)
+        except Exception as exc:
+            logger.exception("LLM decision failed: %s", exc)
+            raise HTTPException(
+                status_code=502,
+                detail=f"LLM decision failed: {exc!s}. Try again or use use_llm=false.",
+            ) from exc
+        engine: Literal["llm", "simulated"] = "llm"
+    else:
+        decisions = compute_simulated_decisions(price, stock, comp_tuples)
+        engine = "simulated"
+
     return SimulatedDecisionResponse(
         product=product_dict,
         competitors=competitors_out,
         decisions=decisions,
         source=source,
+        decision_engine=engine,
     )

@@ -18,7 +18,7 @@ def test_root_serves_demo_html():
     assert "Collecting your data" in r.text
     assert "Replay tour" in r.text
     assert "Fetch product" in r.text
-    assert "MVP - Simulated Logic" in r.text
+    assert "AI Pricing Decision Engine (LLM-powered)" in r.text
     assert "starts automatically" in r.text
     assert "aide_demo_tour_v4_done" in r.text
     assert "tour-root" in r.text
@@ -33,3 +33,5 @@ def test_readiness_json():
     assert "rag_ready" in body
     assert isinstance(body["openai_configured"], bool)
     assert isinstance(body["rag_ready"], bool)
+    assert "llm_decisions_ready" in body
+    assert body["llm_decisions_ready"] == body["openai_configured"]
