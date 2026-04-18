@@ -29,6 +29,13 @@ logger = get_logger(__name__)
 
 async def main() -> None:
     configure_logging()
+    mode = settings.embedding_mode.lower().strip()
+    if mode != "pseudo" and not settings.openai_api_key:
+        logger.warning(
+            "OPENAI_API_KEY is unset: building the FAISS index with pseudo embeddings. "
+            "If you add a key later only at runtime, retrieval quality will be wrong until you "
+            "redeploy (or set EMBEDDING_MODE=pseudo for a consistent offline index)."
+        )
     kb_path = settings.knowledge_base_path
     chunks = load_knowledge_chunks(kb_path)
     texts: list[str] = []

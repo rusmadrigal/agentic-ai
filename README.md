@@ -98,7 +98,7 @@ You can commit those files for reproducible deploys, or rely on the **Render `bu
 
 1. Push this repository to GitHub/GitLab.
 2. In the Render dashboard, create a **Blueprint** and select the repo (Render will read `render.yaml`).
-3. When prompted, set **`OPENAI_API_KEY`** (mark as secret). Render will inject **`PORT`** automatically; do not hardcode it.
+3. When prompted, set **`OPENAI_API_KEY`** (mark as secret). Render will inject **`PORT`** automatically; do not hardcode it. Prefer having the key available **before the first build** so the FAISS index uses the same embedding space as runtime; if the first build ran without a key, trigger a **manual redeploy** after adding the secret.
 4. Deploy. The blueprint runs:
    - **Build:** `pip install … && python scripts/build_index.py` (rebuilds the FAISS index; uses OpenAI embeddings only if a key is present at build time, otherwise **pseudo** embeddings).
    - **Start:** `uvicorn api.index:app --host 0.0.0.0 --port $PORT`

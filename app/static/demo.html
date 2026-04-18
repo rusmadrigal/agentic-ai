@@ -199,13 +199,13 @@
     }
     footer .byline {
       display: block;
-      margin-top: 0.35rem;
+      margin-top: 0;
       color: var(--text);
       font-weight: 500;
       letter-spacing: 0.02em;
     }
     footer .footer-stack {
-      margin: 0;
+      margin: 0.85rem 0 0;
     }
     footer .footer-contact {
       display: flex;
@@ -595,7 +595,6 @@ Premium adjacency on collection pages</textarea>
     </div>
   </main>
   <footer>
-    <p class="footer-stack">Built with FastAPI · FAISS RAG · OpenAI · For technical review</p>
     <span class="byline">Created by Rusben Madrigal</span>
     <address class="footer-contact">
       <span>San José, Costa Rica</span>
@@ -606,6 +605,7 @@ Premium adjacency on collection pages</textarea>
       <span class="sep" aria-hidden="true">·</span>
       <a href="https://www.rusmadrigal.com" rel="noopener noreferrer">www.rusmadrigal.com</a>
     </address>
+    <p class="footer-stack">Built with FastAPI · FAISS RAG · OpenAI · For technical review</p>
   </footer>
 
   <div id="tour-root" aria-hidden="true">
@@ -1177,6 +1177,18 @@ Premium adjacency on collection pages</textarea>
         }
         window.setTimeout(function () {
           if (loadOverlay.classList.contains("is-open")) return;
+          var already = false;
+          try {
+            already = !!localStorage.getItem(TOUR_STORAGE_KEY);
+          } catch (e) {
+            /* private mode */
+          }
+          if (already) return;
+          try {
+            localStorage.setItem(TOUR_STORAGE_KEY, "1");
+          } catch (e) {
+            /* cannot persist — still open tour this load */
+          }
           if (tourRoot.classList.contains("is-open")) return;
           openTour();
         }, 900);

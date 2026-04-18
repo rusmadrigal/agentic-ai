@@ -1,5 +1,9 @@
 # Render Blueprint — https://render.com/docs/infrastructure-as-code
 # Create or link a Blueprint in the Render dashboard and point it at this file.
+#
+# Before first production deploy: set OPENAI_API_KEY (secret) on the service so the
+# build step can call OpenAI embeddings. If the key is missing at build time, the
+# index is built with pseudo vectors (see scripts/build_index.py + README).
 services:
   - type: web
     name: agentic-ai-decision-engine
