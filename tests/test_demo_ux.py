@@ -11,6 +11,9 @@ def test_root_serves_demo_html():
     assert "Agentic AI Decision Engine" in r.text
     assert "/v1/decisions" in r.text
     assert "Created by Rusben Madrigal" in r.text
+    assert "San José, Costa Rica" in r.text
+    assert "rusbenmadrigal@gmail.com" in r.text
+    assert "rusmadrigal.com" in r.text
     assert "load-overlay" in r.text
     assert "Collecting your data" in r.text
     assert "Guided tour" in r.text
