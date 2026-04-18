@@ -16,7 +16,9 @@ def test_root_serves_demo_html():
     assert "rusmadrigal.com" in r.text
     assert "load-overlay" in r.text
     assert "Collecting your data" in r.text
-    assert "Guided tour" in r.text
+    assert "Replay tour" in r.text
+    assert "starts automatically" in r.text
+    assert "aide_demo_tour_v4_done" in r.text
     assert "tour-root" in r.text
 
 

@@ -363,16 +363,30 @@
       transition: opacity 0.25s ease, visibility 0.25s ease;
     }
     #tour-root.is-open {
-      pointer-events: auto;
+      pointer-events: none;
       opacity: 1;
       visibility: visible;
     }
-    .tour-backdrop {
+    /* Spotlight “hole”: dim + blur only outside the active field */
+    .tour-shade-full {
       position: absolute;
       inset: 0;
-      background: rgba(6, 10, 22, 0.78);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
+      z-index: 251;
+      background: rgba(6, 10, 22, 0.5);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      pointer-events: auto;
+      cursor: pointer;
+    }
+    .tour-strip {
+      position: fixed;
+      z-index: 251;
+      display: none;
+      background: rgba(6, 10, 22, 0.5);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      pointer-events: auto;
+      cursor: pointer;
     }
     .tour-card {
       position: fixed;
@@ -392,6 +406,17 @@
         0 24px 64px -12px rgba(0, 0, 0, 0.55);
       z-index: 252;
       text-align: left;
+      pointer-events: auto;
+    }
+    .tour-card.tour-card--anchored:not(.tour-card--top) {
+      top: auto;
+      bottom: max(1rem, env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+    }
+    .tour-card.tour-card--anchored.tour-card--top {
+      top: max(1rem, env(safe-area-inset-top));
+      bottom: auto;
+      transform: translateX(-50%);
     }
     .tour-card-inner {
       padding: 1.25rem 1.25rem 1rem;
@@ -486,6 +511,12 @@
         transform: translateX(-50%);
         max-height: 52vh;
       }
+      .tour-card.tour-card--anchored:not(.tour-card--top),
+      .tour-card.tour-card--anchored.tour-card--top {
+        top: auto;
+        bottom: max(0.75rem, env(safe-area-inset-bottom));
+        transform: translateX(-50%);
+      }
     }
   </style>
 </head>
@@ -497,8 +528,8 @@
         <p class="tagline">RAG + multi-step agents → structured commercial decisions for e-commerce (MVP).</p>
       </div>
       <nav class="nav-links" id="tour-nav" aria-label="Primary">
-        <button type="button" class="tour-launch" id="tour-launch" title="Start a short walkthrough of this demo">
-          Guided tour
+        <button type="button" class="tour-launch" id="tour-launch" title="Run the walkthrough again">
+          Replay tour
         </button>
         <a href="/docs">OpenAPI (Swagger)</a>
         <a href="/health">Health JSON</a>
@@ -571,8 +602,6 @@ Premium adjacency on collection pages</textarea>
       <span class="sep" aria-hidden="true">·</span>
       <a href="mailto:rusbenmadrigal@gmail.com">rusbenmadrigal@gmail.com</a>
       <span class="sep" aria-hidden="true">·</span>
-      <a href="tel:+50687773420">+506&nbsp;8777&nbsp;3420</a>
-      <span class="sep" aria-hidden="true">·</span>
       <a href="https://github.com/rusmadrigal" rel="noopener noreferrer">@rusmadrigal</a>
       <span class="sep" aria-hidden="true">·</span>
       <a href="https://www.rusmadrigal.com" rel="noopener noreferrer">www.rusmadrigal.com</a>
@@ -580,8 +609,13 @@ Premium adjacency on collection pages</textarea>
   </footer>
 
   <div id="tour-root" aria-hidden="true">
-    <div class="tour-backdrop" id="tour-backdrop" aria-hidden="true"></div>
+    <div class="tour-shade-full" id="tour-shade-full" aria-hidden="true"></div>
+    <div class="tour-strip" id="tour-strip-top" aria-hidden="true"></div>
+    <div class="tour-strip" id="tour-strip-left" aria-hidden="true"></div>
+    <div class="tour-strip" id="tour-strip-right" aria-hidden="true"></div>
+    <div class="tour-strip" id="tour-strip-bottom" aria-hidden="true"></div>
     <div
+      id="tour-card"
       class="tour-card"
       role="dialog"
       aria-modal="true"
@@ -589,7 +623,7 @@ Premium adjacency on collection pages</textarea>
       aria-describedby="tour-card-copy"
     >
       <div class="tour-card-inner">
-        <p class="tour-kicker" id="tour-kicker">Guided tour</p>
+        <p class="tour-kicker" id="tour-kicker">Walkthrough</p>
         <h2 id="tour-card-title"></h2>
         <p class="tour-copy" id="tour-card-copy"></p>
       </div>
@@ -670,75 +704,238 @@ Premium adjacency on collection pages</textarea>
     const tourNext = document.getElementById("tour-next");
     const tourSkip = document.getElementById("tour-skip");
     const tourLaunch = document.getElementById("tour-launch");
+    const tourCard = document.getElementById("tour-card");
+    const tourShadeFull = document.getElementById("tour-shade-full");
+    const tourStripTop = document.getElementById("tour-strip-top");
+    const tourStripLeft = document.getElementById("tour-strip-left");
+    const tourStripRight = document.getElementById("tour-strip-right");
+    const tourStripBottom = document.getElementById("tour-strip-bottom");
+    const tourStrips = [tourStripTop, tourStripLeft, tourStripRight, tourStripBottom];
+
+    const TOUR_STORAGE_KEY = "aide_demo_tour_v4_done";
 
     const TOUR_STEPS = [
       {
         selector: null,
-        kicker: "Orientation",
-        title: "What this demo represents",
+        kicker: "Welcome",
+        title: "This tour starts automatically (once)",
         body:
-          "This is a compact agentic AI pipeline for e-commerce: first it retrieves relevant internal playbooks (RAG over FAISS), then specialized agents produce structured commercial decisions and an executive-style narrative—closer to a delivery artifact than a generic chat response.",
+          "You will walk field-by-field through the most important inputs. The sample data is realistic—keep it or edit as you go. Each step clears a “window” over the highlighted field so it stays sharp; the rest of the page is dimmed. You can still use the form while the card is open. Use Next / Back, or Skip / Escape to exit. You can replay anytime from “Replay tour”.",
       },
       {
-        selector: "#tour-brand",
-        kicker: "Positioning",
-        title: "Solution framing",
+        selector: "#title",
+        kicker: "Step 1 · Identity",
+        title: "Product title",
         body:
-          "The headline states the intent: combine retrieval-grounded context with multi-step reasoning so outputs read like something you could share with stakeholders—not unstructured prose.",
+          "Confirm the title is specific enough for retrieval (brand, variant, or segment). This anchors both search and the downstream narrative.",
+        focus: true,
       },
       {
-        selector: "#tour-nav",
-        kicker: "For reviewers",
-        title: "APIs and observability",
+        selector: "#description",
+        kicker: "Step 2 · Story",
+        title: "Commercial description",
         body:
-          "OpenAPI documents the contract for POST /v1/decisions. Health and Readiness expose machine-friendly flags (for example, whether the knowledge index is loaded) without exposing secrets.",
+          "Add the commercial story: demand signals, channel performance, PDP gaps, or inventory pressure. More concrete phrases improve analysis quality.",
+        focus: true,
       },
       {
-        selector: "#tour-input-panel",
-        kicker: "Inputs",
-        title: "Product brief",
+        selector: "#category",
+        kicker: "Step 3 · Taxonomy",
+        title: "Category",
         body:
-          "Edit the sample SKU like a real merchandising brief: narrative, economics (price, cost, margin target), inventory posture, and guardrails. This mirrors how teams constrain recommendations in practice.",
+          "Set the merchandising category. It helps the model frame benchmarks and seasonality assumptions.",
+        focus: true,
+      },
+      {
+        selector: "#price_usd",
+        kicker: "Step 4 · Economics",
+        title: "Customer price (USD)",
+        body:
+          "Enter the customer-facing list or selling price you want decisions to respect. Pair it with cost on the next step.",
+        focus: true,
+      },
+      {
+        selector: "#cost_usd",
+        kicker: "Step 5 · Economics",
+        title: "Cost (USD)",
+        body:
+          "Enter landed or unit cost if you have it. With price + cost, the agents can reason about margin headroom.",
+        focus: true,
       },
       {
         selector: "#constraints",
-        kicker: "Guardrails",
-        title: "Constraints matter",
+        kicker: "Step 6 · Guardrails",
+        title: "Business constraints",
         body:
-          "Each line encodes a business rule (e.g., promotional limits, brand adjacency). The agents are instructed to respect these inputs when forming recommendations.",
+          "One rule per line (promo limits, MAP, brand adjacency, channel restrictions). These are treated as hard context for recommendations.",
+        focus: true,
       },
       {
-        selector: "#tour-competitors",
-        kicker: "Context",
+        selector: "#competitors .c-name",
+        kicker: "Step 7 · Competition",
         title: "Named competitors",
         body:
-          "Optional competitor rows add competitive texture—useful for positioning and pricing narratives. You can add more rows before running the pipeline.",
+          "Add at least one named competitor when possible. Optional price and notes sharpen positioning and pricing language in the output.",
+        focus: true,
       },
       {
         selector: "#run",
-        kicker: "Action",
-        title: "Run the pipeline",
+        kicker: "Step 8 · Execute",
+        title: "Generate the brief",
         body:
-          "This calls POST /v1/decisions. A loading state appears while retrieval and agents execute. Output lands in the right-hand panel as an executive summary plus supporting analysis.",
+          "When inputs look right, press here. A short loading state runs while retrieval + agents execute; results appear in the Output column.",
+        focus: true,
       },
       {
         selector: "#out",
-        kicker: "Deliverable",
-        title: "Structured output",
+        kicker: "Step 9 · Result",
+        title: "Where the deliverable lands",
         body:
-          "Results are rendered as cards (summary, signals, risks) with optional raw JSON for technical validation—similar to how you might separate client-facing text from traceability in delivery.",
+          "Executive summary, signals, and risks render as cards. Expand “Full JSON response” if you need the raw contract for validation or demos.",
+        focus: false,
+      },
+      {
+        selector: "#tour-nav",
+        kicker: "Reference",
+        title: "OpenAPI & health",
+        body:
+          "Use OpenAPI for request/response schemas. Readiness shows whether the knowledge index and API key are configured—useful before a stakeholder demo.",
+        focus: false,
       },
       {
         selector: "footer",
-        kicker: "Close",
-        title: "You're set",
+        kicker: "Done",
+        title: "You are ready",
         body:
-          "Explore OpenAPI for schemas and examples. In an interview, emphasize traceability (RAG hits), typed JSON contracts (Pydantic), and safe configuration (API keys only server-side). Click Finish or Skip anytime.",
+          "Adjust any field and run again as needed. For interviews: emphasize RAG traceability, typed JSON outputs, and secrets only on the server. Click Finish to close.",
+        focus: false,
       },
     ];
 
     let tourIndex = 0;
     let tourKeyHandler = null;
+    let tourLayoutRetryTimer = null;
+    let tourReflowRaf = null;
+    let tourLayoutListenersAttached = false;
+
+    function hideTourStrips() {
+      tourStrips.forEach((s) => {
+        s.style.display = "none";
+      });
+    }
+
+    function layoutTourShade(target) {
+      if (!target || !(target instanceof Element)) {
+        tourShadeFull.style.display = "block";
+        hideTourStrips();
+        return;
+      }
+      const rect = target.getBoundingClientRect();
+      if (rect.width < 2 && rect.height < 2) {
+        tourShadeFull.style.display = "block";
+        hideTourStrips();
+        return;
+      }
+      tourShadeFull.style.display = "none";
+      const pad = 10;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const t = Math.max(0, Math.floor(rect.top - pad));
+      const l = Math.max(0, Math.floor(rect.left - pad));
+      const ri = Math.min(vw, Math.ceil(rect.right + pad));
+      const b = Math.min(vh, Math.ceil(rect.bottom + pad));
+      const hHole = Math.max(0, b - t);
+
+      tourStripTop.style.display = "block";
+      tourStripTop.style.top = "0px";
+      tourStripTop.style.left = "0px";
+      tourStripTop.style.width = vw + "px";
+      tourStripTop.style.height = t + "px";
+
+      tourStripBottom.style.display = "block";
+      tourStripBottom.style.top = b + "px";
+      tourStripBottom.style.left = "0px";
+      tourStripBottom.style.width = vw + "px";
+      tourStripBottom.style.height = Math.max(0, vh - b) + "px";
+
+      tourStripLeft.style.display = "block";
+      tourStripLeft.style.top = t + "px";
+      tourStripLeft.style.left = "0px";
+      tourStripLeft.style.width = l + "px";
+      tourStripLeft.style.height = hHole + "px";
+
+      tourStripRight.style.display = "block";
+      tourStripRight.style.top = t + "px";
+      tourStripRight.style.left = ri + "px";
+      tourStripRight.style.width = Math.max(0, vw - ri) + "px";
+      tourStripRight.style.height = hHole + "px";
+    }
+
+    function positionTourCardForTarget(target) {
+      const narrow = window.matchMedia("(max-width: 520px)").matches;
+      tourCard.classList.remove("tour-card--anchored", "tour-card--top");
+      if (!target || !(target instanceof Element) || narrow) {
+        return;
+      }
+      const rect = target.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const midY = rect.top + rect.height / 2;
+      const upper = midY < vh / 2;
+      tourCard.classList.add("tour-card--anchored");
+      if (upper) tourCard.classList.remove("tour-card--top");
+      else tourCard.classList.add("tour-card--top");
+    }
+
+    function applyTourLayoutForCurrentStep() {
+      if (!tourRoot.classList.contains("is-open")) return;
+      const step = TOUR_STEPS[tourIndex];
+      const target = step.selector ? document.querySelector(step.selector) : null;
+      layoutTourShade(target);
+      positionTourCardForTarget(target);
+    }
+
+    function onTourResizeOrScroll() {
+      if (!tourRoot.classList.contains("is-open")) return;
+      if (tourReflowRaf) window.cancelAnimationFrame(tourReflowRaf);
+      tourReflowRaf = window.requestAnimationFrame(function () {
+        tourReflowRaf = null;
+        applyTourLayoutForCurrentStep();
+      });
+    }
+
+    function attachTourLayoutListeners() {
+      if (tourLayoutListenersAttached) return;
+      tourLayoutListenersAttached = true;
+      window.addEventListener("resize", onTourResizeOrScroll);
+      window.addEventListener("scroll", onTourResizeOrScroll, true);
+    }
+
+    function detachTourLayoutListeners() {
+      if (!tourLayoutListenersAttached) return;
+      tourLayoutListenersAttached = false;
+      window.removeEventListener("resize", onTourResizeOrScroll);
+      window.removeEventListener("scroll", onTourResizeOrScroll, true);
+    }
+
+    function onTourDimmedPointerDown(e) {
+      if (e.button !== 0 && e.button !== undefined) return;
+      e.preventDefault();
+      closeTour({ persist: false });
+    }
+
+    tourShadeFull.addEventListener("pointerdown", onTourDimmedPointerDown);
+    tourStrips.forEach(function (strip) {
+      strip.addEventListener("pointerdown", onTourDimmedPointerDown);
+    });
+
+    function scheduleTourLayout(target) {
+      layoutTourShade(target);
+      positionTourCardForTarget(target);
+      window.requestAnimationFrame(function () {
+        layoutTourShade(target);
+        positionTourCardForTarget(target);
+      });
+    }
 
     function clearTourSpotlights() {
       document.querySelectorAll(".tour-spotlight").forEach((n) => n.classList.remove("tour-spotlight"));
@@ -753,7 +950,7 @@ Premium adjacency on collection pages</textarea>
     function renderTourStep() {
       const step = TOUR_STEPS[tourIndex];
       const total = TOUR_STEPS.length;
-      tourKicker.textContent = step.kicker || "Guided tour";
+      tourKicker.textContent = step.kicker || "Walkthrough";
       tourTitle.textContent = step.title;
       tourCopy.textContent = step.body;
       tourProgress.textContent = "Step " + (tourIndex + 1) + " of " + total;
@@ -761,45 +958,92 @@ Premium adjacency on collection pages</textarea>
       tourNext.textContent = tourIndex === total - 1 ? "Finish" : "Next";
 
       clearTourSpotlights();
+      let target = null;
       if (step.selector) {
-        const el = document.querySelector(step.selector);
-        if (el) {
-          el.classList.add("tour-spotlight");
-          el.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+        target = document.querySelector(step.selector);
+        if (target) {
+          target.classList.add("tour-spotlight");
+          target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
         }
       }
-      window.setTimeout(() => tourNext.focus(), 80);
+      scheduleTourLayout(target);
+      if (tourLayoutRetryTimer) window.clearTimeout(tourLayoutRetryTimer);
+      tourLayoutRetryTimer = window.setTimeout(function () {
+        tourLayoutRetryTimer = null;
+        scheduleTourLayout(target);
+      }, 450);
+
+      window.setTimeout(function () {
+        const tag = target && target.tagName;
+        const wantFocus = step.focus !== false;
+        if (
+          wantFocus &&
+          target &&
+          tag &&
+          /^(INPUT|TEXTAREA|SELECT|BUTTON)$/i.test(tag) &&
+          typeof target.focus === "function" &&
+          !target.disabled
+        ) {
+          try {
+            target.focus({ preventScroll: false });
+          } catch (e) {
+            tourNext.focus();
+          }
+        } else {
+          tourNext.focus();
+        }
+      }, 320);
     }
 
     function openTour() {
-      if (tourRoot.classList.contains("is-open")) return;
-      tourRoot.classList.add("is-open");
-      tourRoot.setAttribute("aria-hidden", "false");
+      if (!tourRoot.classList.contains("is-open")) {
+        tourRoot.classList.add("is-open");
+        tourRoot.setAttribute("aria-hidden", "false");
+        tourKeyHandler = function (e) {
+          if (e.key === "Escape") closeTour();
+        };
+        window.addEventListener("keydown", tourKeyHandler);
+        attachTourLayoutListeners();
+      }
       tourIndex = 0;
       renderTourStep();
       setBodyScrollForOverlays();
-      tourKeyHandler = function (e) {
-        if (e.key === "Escape") closeTour();
-      };
-      window.addEventListener("keydown", tourKeyHandler);
     }
 
-    function closeTour() {
+    function closeTour(options) {
+      options = options || {};
       if (!tourRoot.classList.contains("is-open")) return;
       tourRoot.classList.remove("is-open");
       tourRoot.setAttribute("aria-hidden", "true");
+      if (tourLayoutRetryTimer) {
+        window.clearTimeout(tourLayoutRetryTimer);
+        tourLayoutRetryTimer = null;
+      }
+      if (tourReflowRaf) {
+        window.cancelAnimationFrame(tourReflowRaf);
+        tourReflowRaf = null;
+      }
+      detachTourLayoutListeners();
+      tourShadeFull.style.display = "none";
+      hideTourStrips();
+      tourCard.classList.remove("tour-card--anchored", "tour-card--top");
       clearTourSpotlights();
       if (tourKeyHandler) {
         window.removeEventListener("keydown", tourKeyHandler);
         tourKeyHandler = null;
       }
-      try {
-        localStorage.setItem("aide_demo_tour_done", "1");
-      } catch (e) { /* ignore */ }
+      if (options.persist !== false) {
+        try {
+          localStorage.setItem(TOUR_STORAGE_KEY, "1");
+        } catch (e) { /* ignore */ }
+      }
       setBodyScrollForOverlays();
     }
 
-    tourLaunch.addEventListener("click", openTour);
+    tourLaunch.addEventListener("click", function () {
+      tourIndex = 0;
+      openTour();
+    });
     tourSkip.addEventListener("click", closeTour);
     tourBack.addEventListener("click", () => {
       if (tourIndex > 0) {
@@ -922,6 +1166,28 @@ Premium adjacency on collection pages</textarea>
       if (!arr || !arr.length) return "";
       return "<strong style=color:var(--text)>" + title + "</strong><br>" + arr.map((x) => "· " + escapeHtml(x)).join("<br>");
     }
+
+    /* First visit in this browser: open tour automatically once (see TOUR_STORAGE_KEY). */
+    function maybeAutoStartTour() {
+      function scheduleOpen() {
+        try {
+          if (localStorage.getItem(TOUR_STORAGE_KEY)) return;
+        } catch (e) {
+          /* private mode — still try to show */
+        }
+        window.setTimeout(function () {
+          if (loadOverlay.classList.contains("is-open")) return;
+          if (tourRoot.classList.contains("is-open")) return;
+          openTour();
+        }, 900);
+      }
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", scheduleOpen);
+      } else {
+        scheduleOpen();
+      }
+    }
+    maybeAutoStartTour();
 
     fetch("/api/readiness")
       .then((r) => r.json())
