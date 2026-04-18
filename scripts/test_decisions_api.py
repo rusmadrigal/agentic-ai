@@ -19,25 +19,12 @@ import requests
 DEFAULT_BASE = "http://127.0.0.1:8000"
 REQUEST_TIMEOUT_SEC = 120
 
-# Root JSON body = ProductBrief: { "product": {...}, "competitors": [...] }
+# Simulated decision API: DummyJSON product_id + competitor title/price
 SAMPLE_PAYLOAD: dict[str, Any] = {
-    "product": {
-        "sku": "TEST-001",
-        "title": "Merino crewneck sweater — limited colors",
-        "description": "Mid-weight merino blend; strong email repeats; sizing content is thin.",
-        "category": "Apparel / Knitwear",
-        "price_usd": 89.0,
-        "cost_usd": 38.0,
-        "inventory_units": 4200,
-        "margin_target_pct": 52.0,
-        "constraints": ["Avoid sitewide 20% coupons", "Premium adjacency"],
-    },
+    "product_id": 1,
     "competitors": [
-        {
-            "name": "Nordic Knit Co. Crew",
-            "price_usd": 78.0,
-            "positioning_notes": "Frequent promos; stronger PDP sizing content.",
-        }
+        {"title": "Brand A", "price": 100},
+        {"title": "Brand B", "price": 130},
     ],
 }
 
@@ -78,7 +65,7 @@ def main() -> int:
     if not response.ok:
         return 1
 
-    required_keys = ("product", "retrieval", "deliverable", "workflow_version")
+    required_keys = ("product", "competitors", "decisions", "source")
     missing = [k for k in required_keys if k not in body]
     if missing:
         print(f"\nWarning: expected top-level keys missing: {missing}", file=sys.stderr)

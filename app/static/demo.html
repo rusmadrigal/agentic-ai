@@ -39,42 +39,61 @@
       z-index: 10;
     }
     header .inner {
-      max-width: 1100px;
+      max-width: 1180px;
       margin: 0 auto;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 0.75rem 1.25rem;
+      gap: 0.75rem 1rem;
       justify-content: space-between;
     }
     h1 {
-      font-size: 1.15rem;
+      font-size: 1.2rem;
       font-weight: 600;
       margin: 0;
       letter-spacing: -0.02em;
     }
-    .tagline { color: var(--muted); font-size: 0.9rem; margin: 0.15rem 0 0; max-width: 36rem; }
-    .nav-links { display: flex; gap: 0.65rem 1rem; flex-wrap: wrap; font-size: 0.88rem; align-items: center; }
-    button.tour-launch {
+    .nav-links {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      font-size: 0.8rem;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .nav-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
       font: inherit;
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       font-weight: 600;
-      padding: 0.38rem 0.75rem;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.35);
+      padding: 0.38rem 0.6rem;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.32);
       background: rgba(15, 23, 42, 0.65);
       color: #e2e8f0;
       cursor: pointer;
       letter-spacing: 0.02em;
+      text-decoration: none;
+      line-height: 1;
+      white-space: nowrap;
     }
-    button.tour-launch:hover {
+    a.nav-chip { color: #e2e8f0; }
+    .nav-chip:hover {
       border-color: rgba(56, 189, 248, 0.55);
       color: #fff;
     }
+    .nav-chip .lucide {
+      width: 0.95rem;
+      height: 0.95rem;
+      stroke-width: 2;
+      flex-shrink: 0;
+    }
     main {
-      max-width: 1100px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 1rem 1.25rem 1.5rem;
+      padding: 1rem 1.25rem 2rem;
     }
     .banner {
       width: 100%;
@@ -88,22 +107,37 @@
       display: grid;
       grid-template-columns: 1fr;
       gap: 1rem;
-      align-items: start;
+      align-items: stretch;
     }
-    @media (min-width: 880px) {
+    @media (min-width: 900px) {
       .layout-split {
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        gap: 1.25rem;
+        gap: 1.5rem;
+        align-items: stretch;
+        min-height: 600px;
       }
     }
+    .layout-column {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .layout-column > .panel {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .panel-input { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); }
+    .panel-output { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25); }
     .banner.show { display: block; }
     .banner.warn { background: rgba(251, 191, 36, 0.12); border: 1px solid rgba(251, 191, 36, 0.35); color: #fde68a; }
     .banner.err { background: rgba(248, 113, 113, 0.1); border: 1px solid rgba(248, 113, 113, 0.35); color: #fecaca; }
     .panel {
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1rem 1.1rem;
+      border-radius: 12px;
+      padding: 1.5rem;
       min-width: 0;
     }
     .panel h2 {
@@ -130,17 +164,33 @@
     .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
     button.primary {
       width: 100%;
-      margin-top: 0.5rem;
-      padding: 0.75rem 1rem;
+      margin-top: 0.75rem;
+      padding: 0.95rem 1.15rem;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       background: linear-gradient(135deg, var(--accent-dim), #0284c7);
       color: #0c1222;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
-      font-size: 0.95rem;
+      font-size: 1.02rem;
+      letter-spacing: 0.01em;
+      box-shadow: 0 4px 20px rgba(14, 165, 233, 0.35);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
-    button.primary:disabled { opacity: 0.55; cursor: not-allowed; }
+    button.primary .lucide {
+      width: 1.15rem;
+      height: 1.15rem;
+      stroke-width: 2.25;
+      flex-shrink: 0;
+    }
+    button.primary:hover:not(:disabled) {
+      filter: brightness(1.06);
+      box-shadow: 0 6px 24px rgba(14, 165, 233, 0.45);
+    }
+    button.primary:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
     button.ghost {
       background: transparent;
       border: 1px dashed var(--border);
@@ -151,17 +201,58 @@
       font-size: 0.82rem;
       margin-bottom: 0.75rem;
     }
-    #out .cards {
-      max-height: min(70vh, 900px);
+    .panel-input-inner {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 0;
+      gap: 1rem;
+    }
+    .panel-input-body {
+      flex: 1 1 auto;
+      min-height: 0;
       overflow-y: auto;
       padding-right: 0.25rem;
     }
-    .cards { display: flex; flex-direction: column; gap: 0.85rem; }
+    .panel-input-footer {
+      flex-shrink: 0;
+      margin-top: auto;
+      padding-top: 0.25rem;
+    }
+    .dashboard-head {
+      flex-shrink: 0;
+    }
+    .dashboard-results {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+      -webkit-overflow-scrolling: touch;
+    }
+    .dashboard-out.panel {
+      min-height: 0;
+      overflow: hidden;
+    }
+    .cards { display: flex; flex-direction: column; gap: 1.15rem; }
     .card {
       background: #101827;
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.95rem 1rem;
+      border-radius: 12px;
+      padding: 1.1rem 1.15rem;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+    }
+    .dashboard-head h2 {
+      margin: 0 0 0.35rem;
+    }
+    .panel-input-footer button.primary {
+      margin-top: 0;
+    }
+    .dashboard-deck-hint {
+      margin: 0 0 1rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.45;
     }
     .card h3 { margin: 0 0 0.5rem; font-size: 1.05rem; }
     .card p { margin: 0; color: var(--muted); font-size: 0.92rem; }
@@ -190,6 +281,372 @@
       word-break: break-word;
     }
     .empty-state { color: var(--muted); font-size: 0.9rem; padding: 1rem 0; }
+    @keyframes dashboard-ai-breathe {
+      0%, 100% { transform: scale(1); opacity: 0.92; }
+      50% { transform: scale(1.05); opacity: 1; }
+    }
+    @keyframes dashboard-ai-halo {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.75; transform: scale(1.12); }
+    }
+    @keyframes dashboard-ai-shimmer {
+      0%, 100% { box-shadow: 0 0 20px rgba(14, 165, 233, 0.18), 0 0 40px rgba(56, 189, 248, 0.06); }
+      50% { box-shadow: 0 0 28px rgba(14, 165, 233, 0.32), 0 0 56px rgba(56, 189, 248, 0.12); }
+    }
+    .dashboard-results > .dashboard-empty {
+      flex: 1 1 auto;
+      min-height: min(280px, 42vh);
+    }
+    .dashboard-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem 1rem 2.5rem;
+      margin: 0 auto;
+    }
+    .dashboard-empty-visual {
+      position: relative;
+      width: 92px;
+      height: 92px;
+      margin-bottom: 1.35rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .dashboard-empty-halo {
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.28) 0%, rgba(14, 165, 233, 0.06) 45%, transparent 70%);
+      animation: dashboard-ai-halo 3.2s ease-in-out infinite;
+    }
+    .dashboard-empty-icon {
+      position: relative;
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      background: linear-gradient(155deg, rgba(14, 165, 233, 0.22), rgba(15, 23, 42, 0.85));
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: dashboard-ai-breathe 2.6s ease-in-out infinite, dashboard-ai-shimmer 2.6s ease-in-out infinite;
+    }
+    .dashboard-empty-icon .lucide {
+      width: 30px;
+      height: 30px;
+      color: #7dd3fc;
+      stroke-width: 1.65;
+      filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.45));
+    }
+    .dashboard-empty-lead {
+      margin: 0 0 0.65rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(125, 211, 252, 0.75);
+    }
+    .dashboard-empty .empty-state {
+      padding: 0;
+      max-width: 26rem;
+      line-height: 1.55;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .dashboard-empty-halo,
+      .dashboard-empty-icon {
+        animation: none;
+      }
+      .dashboard-empty-icon {
+        opacity: 1;
+        box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
+      }
+    }
+    .mvp-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(148, 163, 184, 0.95);
+      margin: 0 0 0.35rem;
+    }
+    button.secondary {
+      width: 100%;
+      padding: 0.55rem 0.85rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: rgba(30, 41, 59, 0.5);
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.88rem;
+    }
+    button.secondary:hover { border-color: var(--accent-dim); color: #fff; }
+    button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .hint { font-size: 0.78rem; color: var(--muted); margin: 0.35rem 0 0.75rem; line-height: 1.45; }
+    .data-source-badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.25rem 0.55rem;
+      border-radius: 6px;
+      background: rgba(52, 211, 153, 0.12);
+      color: var(--success);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      margin-bottom: 0.75rem;
+    }
+    .product-hero-card {
+      background: linear-gradient(165deg, #152036 0%, #101827 100%);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 12px;
+      padding: 1.1rem 1.15rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+    }
+    .product-hero-card.hidden { display: none; }
+    .product-hero-title {
+      font-size: 1.25rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      margin: 0 0 0.5rem;
+      color: #f8fafc;
+    }
+    .product-hero-price {
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 0.65rem;
+      letter-spacing: -0.02em;
+    }
+    .product-hero-meta {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .product-hero-meta .meta-sep { margin: 0 0.4rem; opacity: 0.5; }
+    .product-hero-foot {
+      font-size: 0.8rem;
+      color: rgba(148, 163, 184, 0.9);
+      padding-top: 0.65rem;
+      border-top: 1px solid var(--border);
+    }
+    .decision-hero {
+      background: linear-gradient(165deg, rgba(14, 165, 233, 0.12) 0%, #101827 45%);
+      border: 1px solid rgba(56, 189, 248, 0.45) !important;
+      box-shadow: 0 8px 36px rgba(14, 165, 233, 0.15), 0 0 0 1px rgba(56, 189, 248, 0.08) inset;
+      padding: 1.35rem 1.25rem 1.15rem !important;
+    }
+    .decision-hero-kpi {
+      margin-bottom: 1rem;
+    }
+    .decision-hero-kpi .kpi-label {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+    .decision-hero-kpi .kpi-label .lucide {
+      width: 0.95rem;
+      height: 0.95rem;
+      stroke-width: 2;
+      flex-shrink: 0;
+      opacity: 0.9;
+    }
+    .decision-hero-kpi .kpi-value {
+      font-size: 2.35rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #f8fafc;
+      line-height: 1.1;
+    }
+    .decision-hero-strategy {
+      margin-bottom: 1rem;
+    }
+    .strategy-tag {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(251, 191, 36, 0.15);
+      color: #fde68a;
+      border: 1px solid rgba(251, 191, 36, 0.4);
+    }
+    .decision-hero-action {
+      display: flex;
+      gap: 0.65rem;
+      align-items: flex-start;
+      margin-bottom: 0.85rem;
+    }
+    .decision-hero-action .action-icon-wrap {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 10px;
+      background: rgba(251, 191, 36, 0.12);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      color: #fde68a;
+    }
+    .decision-hero-action .action-icon-wrap .lucide {
+      width: 1.1rem;
+      height: 1.1rem;
+      stroke-width: 2;
+    }
+    .strategy-row-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-bottom: 0.35rem;
+    }
+    .strategy-row-label .lucide {
+      width: 0.9rem;
+      height: 0.9rem;
+      stroke-width: 2;
+      flex-shrink: 0;
+      opacity: 0.85;
+    }
+    .action-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 0.2rem;
+    }
+    .action-text {
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.35;
+    }
+    .action-sub {
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-top: 0.35rem;
+      line-height: 1.4;
+    }
+    .decision-microcopy {
+      margin: 0;
+      font-size: 0.78rem;
+      color: rgba(148, 163, 184, 0.85);
+      line-height: 1.45;
+      padding-top: 0.85rem;
+      border-top: 1px solid rgba(51, 65, 85, 0.6);
+    }
+    .insight-card {
+      border-left: 3px solid rgba(56, 189, 248, 0.65);
+    }
+    .insight-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.45rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .insight-label .lucide {
+      width: 0.95rem;
+      height: 0.95rem;
+      stroke-width: 2;
+      flex-shrink: 0;
+    }
+    .insight-text {
+      margin: 0;
+      font-size: 0.98rem;
+      line-height: 1.55;
+      color: rgba(226, 232, 240, 0.95);
+    }
+    .bar-chart { margin-top: 0.35rem; }
+    .bar-row {
+      margin-bottom: 0.85rem;
+    }
+    .bar-row:last-child { margin-bottom: 0; }
+    .bar-row-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.35rem;
+      font-size: 0.86rem;
+    }
+    .bar-label { font-weight: 600; color: var(--text); }
+    .bar-label--you { color: var(--accent); }
+    .bar-price { color: var(--muted); font-variant-numeric: tabular-nums; }
+    .bar-track {
+      height: 10px;
+      border-radius: 99px;
+      background: rgba(30, 41, 59, 0.9);
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, rgba(100, 116, 139, 0.85), rgba(71, 85, 105, 0.95));
+      min-width: 4px;
+      transition: width 0.35s ease;
+    }
+    .bar-fill--you {
+      background: linear-gradient(90deg, #0ea5e9, #22d3ee);
+      box-shadow: 0 0 12px rgba(14, 165, 233, 0.35);
+    }
+    .product-card-dashboard .product-dash-title {
+      font-size: 1.1rem;
+      font-weight: 650;
+      margin: 0.35rem 0 0.25rem;
+      letter-spacing: -0.02em;
+    }
+    .product-card-dashboard .product-dash-price {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 0.5rem;
+    }
+    .product-card-dashboard .product-dash-lines {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    fieldset.manual-product {
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      margin: 0 0 1rem;
+    }
+    fieldset.manual-product legend { padding: 0 0.35rem; color: var(--muted); font-size: 0.8rem; }
+    .comp-row {
+      position: relative;
+      margin-bottom: 0.75rem;
+      padding: 0.65rem 2rem 0.75rem 0.75rem;
+      background: rgba(15, 23, 42, 0.4);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .comp-row .remove-comp {
+      position: absolute;
+      top: 0.35rem;
+      right: 0.35rem;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1.15rem;
+      line-height: 1;
+      padding: 0.15rem 0.35rem;
+    }
+    .comp-row .remove-comp:hover { color: var(--err); }
     footer {
       text-align: center;
       padding: 1.5rem 1rem 2rem;
@@ -524,16 +981,26 @@
   <header>
     <div class="inner">
       <div id="tour-brand">
+        <p class="mvp-label">AI Decision Engine (MVP - Simulated Logic)</p>
         <h1>Agentic AI Decision Engine</h1>
-        <p class="tagline">RAG + multi-step agents → structured commercial decisions for e-commerce (MVP).</p>
       </div>
       <nav class="nav-links" id="tour-nav" aria-label="Primary">
-        <button type="button" class="tour-launch" id="tour-launch" title="Run the walkthrough again">
-          Replay tour
+        <button type="button" class="nav-chip" id="tour-launch" title="Replay tour">
+          <i data-lucide="map"></i>
+          <span>Tour</span>
         </button>
-        <a href="/docs">OpenAPI (Swagger)</a>
-        <a href="/health">Health JSON</a>
-        <a href="/api/readiness">Readiness</a>
+        <a href="/docs" class="nav-chip" title="OpenAPI (Swagger)">
+          <i data-lucide="file-code-2"></i>
+          <span>API</span>
+        </a>
+        <a href="/health" class="nav-chip" title="Health check (JSON)">
+          <i data-lucide="activity"></i>
+          <span>Health</span>
+        </a>
+        <a href="/api/readiness" class="nav-chip" title="Readiness (OpenAI / RAG)">
+          <i data-lucide="gauge"></i>
+          <span>Ready</span>
+        </a>
       </nav>
     </div>
   </header>
@@ -541,57 +1008,87 @@
     <div id="banner" class="banner" role="status" aria-live="polite"></div>
 
     <div class="layout-split">
+    <div class="layout-column">
     <section class="panel panel-input" id="tour-input-panel">
-      <h2>Product input</h2>
-      <label for="title">Title</label>
-      <input id="title" type="text" value="Merino crewneck sweater — limited colors" />
-      <label for="description">Description</label>
-      <textarea id="description">Mid-weight merino blend; strong email repeats; sizing content is thin on PDP.</textarea>
-      <div class="row2">
-        <div>
-          <label for="category">Category</label>
-          <input id="category" type="text" value="Apparel / Knitwear" />
-        </div>
-        <div>
-          <label for="sku">SKU (optional)</label>
-          <input id="sku" type="text" value="DEMO-001" />
-        </div>
-      </div>
-      <div class="row2">
-        <div>
-          <label for="price_usd">Price (USD)</label>
-          <input id="price_usd" type="number" step="0.01" value="89" />
-        </div>
-        <div>
-          <label for="cost_usd">Cost (USD)</label>
-          <input id="cost_usd" type="number" step="0.01" value="38" />
-        </div>
-      </div>
-      <div class="row2">
-        <div>
-          <label for="inventory_units">Inventory units</label>
-          <input id="inventory_units" type="number" value="4200" />
-        </div>
-        <div>
-          <label for="margin_target_pct">Margin target %</label>
-          <input id="margin_target_pct" type="number" step="0.1" value="52" />
-        </div>
-      </div>
-      <label for="constraints">Constraints (one per line)</label>
-      <textarea id="constraints">Avoid sitewide 20% coupons
-Premium adjacency on collection pages</textarea>
-      <h2 id="tour-competitors" style="margin-top:1rem">Competitors</h2>
-      <div id="competitors"></div>
-      <button type="button" class="ghost" id="addComp">+ Add competitor</button>
-      <button type="button" class="primary" id="run">Generate decision brief</button>
-    </section>
+      <div class="panel-input-inner">
+        <div class="panel-input-body">
+          <h2>Product source</h2>
+          <div class="row2">
+            <div>
+              <label for="product-id">Product ID (DummyJSON)</label>
+              <input id="product-id" type="number" min="1" step="1" value="1" />
+            </div>
+            <div style="display:flex;align-items:flex-end;padding-bottom:0.65rem">
+              <button type="button" class="secondary" id="fetch-product">Fetch product</button>
+            </div>
+          </div>
+          <p class="hint" id="fetch-hint">Loads public product JSON from dummyjson.com — server-side fetch for the demo.</p>
+          <div id="product-preview" class="product-hero-card hidden" aria-live="polite">
+            <span class="data-source-badge" id="pv-data-badge">Data source: DummyJSON API</span>
+            <div class="product-hero-title" id="pv-hero-title">—</div>
+            <div class="product-hero-price" id="pv-hero-price">—</div>
+            <div class="product-hero-meta">
+              <span id="pv-hero-cat">—</span><span class="meta-sep">·</span><span id="pv-hero-stock">Stock: —</span>
+            </div>
+            <div class="product-hero-foot" id="pv-hero-source">Source: DummyJSON (ID: —)</div>
+          </div>
 
-    <section class="panel panel-output" id="out" aria-label="Decision output">
-      <h2>Output</h2>
-      <div id="result" class="cards">
-        <p class="empty-state">Run the pipeline to see executive summary, analysis, and decisions here.</p>
+          <fieldset class="manual-product" id="manual-fieldset">
+            <legend>Manual product (fallback)</legend>
+            <p class="hint">If <strong>title</strong> and <strong>price</strong> are filled here, recommendations use this product and ignore Product ID.</p>
+            <label for="manual-title">Title</label>
+            <input id="manual-title" type="text" placeholder="e.g. Private-label water bottle" />
+            <div class="row2">
+              <div>
+                <label for="manual-price">Price (USD)</label>
+                <input id="manual-price" type="number" step="0.01" placeholder="0" />
+              </div>
+              <div>
+                <label for="manual-stock">Stock (optional)</label>
+                <input id="manual-stock" type="number" min="0" step="1" placeholder="—" />
+              </div>
+            </div>
+            <label for="manual-category">Category (optional)</label>
+            <input id="manual-category" type="text" placeholder="e.g. Home / Kitchen" />
+            <label for="manual-desc">Description (optional)</label>
+            <textarea id="manual-desc" placeholder="Short commercial note"></textarea>
+          </fieldset>
+
+          <h2 id="tour-competitors">Competitors</h2>
+          <p class="hint">Add peer offers to benchmark list price (title + price).</p>
+          <div id="competitors"></div>
+          <button type="button" class="ghost" id="addComp">+ Add competitor</button>
+        </div>
+        <div class="panel-input-footer">
+          <button type="button" class="primary cta-pricing" id="run">
+            <i data-lucide="sparkles"></i>
+            <span>Get Pricing Recommendation</span>
+          </button>
+        </div>
       </div>
     </section>
+    </div>
+
+    <div class="layout-column">
+    <section class="panel panel-output dashboard-out" id="out" aria-label="Pricing dashboard">
+      <div class="dashboard-head">
+        <h2>Pricing dashboard</h2>
+        <p class="dashboard-deck-hint">AI-generated recommendation based on competitive benchmarking. (Simulated rules in this MVP.)</p>
+      </div>
+      <div id="result" class="cards dashboard-results">
+        <div class="dashboard-empty" role="status" aria-live="polite">
+          <div class="dashboard-empty-visual" aria-hidden="true">
+            <span class="dashboard-empty-halo"></span>
+            <div class="dashboard-empty-icon">
+              <i data-lucide="sparkles"></i>
+            </div>
+          </div>
+          <p class="dashboard-empty-lead">AI standby</p>
+          <p class="empty-state">Fetch a catalog product (or enter a manual SKU), add competitor prices, then tap <strong>Get Pricing Recommendation</strong> — your decision, insight, and price bars appear here.</p>
+        </div>
+      </div>
+    </section>
+    </div>
     </div>
   </main>
   <footer>
@@ -656,17 +1153,22 @@ Premium adjacency on collection pages</textarea>
     </div>
   </div>
 
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
   <script>
     const $ = (id) => document.getElementById(id);
+
+    function refreshIcons() {
+      if (typeof lucide !== "undefined" && lucide.createIcons) lucide.createIcons();
+    }
     const banner = $("banner");
     const loadOverlay = $("load-overlay");
     const loadSub = $("load-sub");
 
     const LOAD_STEPS = [
-      "Gathering product context and policy signals…",
-      "Retrieving relevant playbooks from the knowledge base…",
-      "Running analysis and structured decision agents…",
-      "Composing your executive-ready brief…",
+      "Consolidating product and competitor inputs…",
+      "Benchmarking price against peer set…",
+      "Applying simulated pricing & inventory rules…",
+      "Preparing your decision summary…",
     ];
     let loadStepTimer = null;
 
@@ -720,78 +1222,54 @@ Premium adjacency on collection pages</textarea>
         kicker: "Welcome",
         title: "This tour starts automatically (once)",
         body:
-          "You will walk field-by-field through the most important inputs. The sample data is realistic—keep it or edit as you go. Each step clears a “window” over the highlighted field so it stays sharp; the rest of the page is dimmed. You can still use the form while the card is open. Use Next / Back, or Skip / Escape to exit. You can replay anytime from “Replay tour”.",
+          "You’ll use a realistic merchandising flow: pull a live product from DummyJSON, add competitor prices, and generate a structured decision (simulated rules — no LLM required for this path). Dimmed areas close the tour on click; use Next / Back, Skip, or Escape. Replay anytime via Tour in the header.",
       },
       {
-        selector: "#title",
-        kicker: "Step 1 · Identity",
-        title: "Product title",
+        selector: "#product-id",
+        kicker: "Step 1 · Data",
+        title: "Product ID",
         body:
-          "Confirm the title is specific enough for retrieval (brand, variant, or segment). This anchors both search and the downstream narrative.",
+          "Enter a DummyJSON product id (try 1–20). This drives external catalog ingestion on the server.",
         focus: true,
       },
       {
-        selector: "#description",
-        kicker: "Step 2 · Story",
-        title: "Commercial description",
+        selector: "#fetch-product",
+        kicker: "Step 2 · Ingest",
+        title: "Fetch product",
         body:
-          "Add the commercial story: demand signals, channel performance, PDP gaps, or inventory pressure. More concrete phrases improve analysis quality.",
+          "Calls the API to load title, price, category, and stock into the preview before you decide.",
         focus: true,
       },
       {
-        selector: "#category",
-        kicker: "Step 3 · Taxonomy",
-        title: "Category",
+        selector: "#manual-fieldset",
+        kicker: "Step 3 · Fallback",
+        title: "Manual product (optional)",
         body:
-          "Set the merchandising category. It helps the model frame benchmarks and seasonality assumptions.",
-        focus: true,
+          "If you fill title + price here, the engine ignores Product ID — useful for private SKUs or what-if scenarios.",
+        focus: false,
       },
       {
-        selector: "#price_usd",
-        kicker: "Step 4 · Economics",
-        title: "Customer price (USD)",
+        selector: "#competitors",
+        kicker: "Step 4 · Peers",
+        title: "Competitors",
         body:
-          "Enter the customer-facing list or selling price you want decisions to respect. Pair it with cost on the next step.",
-        focus: true,
-      },
-      {
-        selector: "#cost_usd",
-        kicker: "Step 5 · Economics",
-        title: "Cost (USD)",
-        body:
-          "Enter landed or unit cost if you have it. With price + cost, the agents can reason about margin headroom.",
-        focus: true,
-      },
-      {
-        selector: "#constraints",
-        kicker: "Step 6 · Guardrails",
-        title: "Business constraints",
-        body:
-          "One rule per line (promo limits, MAP, brand adjacency, channel restrictions). These are treated as hard context for recommendations.",
-        focus: true,
-      },
-      {
-        selector: "#competitors .c-name",
-        kicker: "Step 7 · Competition",
-        title: "Named competitors",
-        body:
-          "Add at least one named competitor when possible. Optional price and notes sharpen positioning and pricing language in the output.",
-        focus: true,
+          "Add or remove peer rows (title + USD price). Average peer price anchors the simulated strategy.",
+        focus: false,
       },
       {
         selector: "#run",
-        kicker: "Step 8 · Execute",
-        title: "Generate the brief",
+        kicker: "Step 5 · Decide",
+        title: "Get Pricing Recommendation",
         body:
-          "When inputs look right, press here. A short loading state runs while retrieval + agents execute; results appear in the Output column.",
+          "Runs POST /v1/decisions. Your pricing dashboard shows the decision hero, key insight, product context, and competitive price bars.",
         focus: true,
       },
       {
         selector: "#out",
-        kicker: "Step 9 · Result",
-        title: "Where the deliverable lands",
+        kicker: "Step 6 · Output",
+        title: "Recommendations",
         body:
-          "Executive summary, signals, and risks render as cards. Expand “Full JSON response” if you need the raw contract for validation or demos.",
+          "Review pricing strategy, recommended price, promotion, inventory action, and reasoning. Expand raw JSON if needed.",
         focus: false,
       },
       {
@@ -799,15 +1277,15 @@ Premium adjacency on collection pages</textarea>
         kicker: "Reference",
         title: "OpenAPI & health",
         body:
-          "Use OpenAPI for request/response schemas. Readiness shows whether the knowledge index and API key are configured—useful before a stakeholder demo.",
+          "Swagger documents the request/response contract. Readiness reflects optional OpenAI/RAG assets; simulated decisions run without them.",
         focus: false,
       },
       {
         selector: "footer",
         kicker: "Done",
-        title: "You are ready",
+        title: "You’re set",
         body:
-          "Adjust any field and run again as needed. For interviews: emphasize RAG traceability, typed JSON outputs, and secrets only on the server. Click Finish to close.",
+          "This demo highlights external data ingestion and business-oriented JSON. Click Finish to close.",
         focus: false,
       },
     ];
@@ -1069,92 +1547,6 @@ Premium adjacency on collection pages</textarea>
       banner.textContent = "";
     }
 
-    function compBlock(name, price, notes) {
-      const wrap = document.createElement("div");
-      wrap.style.marginBottom = "0.75rem";
-      wrap.innerHTML = `
-        <label>Competitor name</label>
-        <input type="text" class="c-name" value="${name.replace(/"/g, "&quot;")}" />
-        <div class="row2">
-          <div><label>Price USD</label><input type="number" step="0.01" class="c-price" value="${price}" /></div>
-          <div><label>Notes</label><input type="text" class="c-notes" value="${notes.replace(/"/g, "&quot;")}" /></div>
-        </div>`;
-      return wrap;
-    }
-
-    const compRoot = $("competitors");
-    compRoot.appendChild(compBlock("Nordic Knit Co. Crew", "78", "Frequent promos; stronger sizing content"));
-
-    $("addComp").onclick = () => compRoot.appendChild(compBlock("", "", ""));
-
-    function buildPayload() {
-      const constraints = $("constraints").value.split("\n").map((s) => s.trim()).filter(Boolean);
-      const comps = [];
-      compRoot.querySelectorAll(":scope > div").forEach((row) => {
-        const name = row.querySelector(".c-name").value.trim();
-        if (!name) return;
-        const price = row.querySelector(".c-price").value.trim();
-        const notes = row.querySelector(".c-notes").value.trim();
-        const o = { name, positioning_notes: notes };
-        if (price !== "") o.price_usd = parseFloat(price);
-        comps.push(o);
-      });
-      return {
-        product: {
-          sku: $("sku").value.trim() || null,
-          title: $("title").value.trim(),
-          description: $("description").value,
-          category: $("category").value.trim() || null,
-          price_usd: parseFloat($("price_usd").value),
-          cost_usd: $("cost_usd").value === "" ? null : parseFloat($("cost_usd").value),
-          inventory_units: $("inventory_units").value === "" ? null : parseInt($("inventory_units").value, 10),
-          margin_target_pct: $("margin_target_pct").value === "" ? null : parseFloat($("margin_target_pct").value),
-          constraints,
-        },
-        competitors: comps,
-      };
-    }
-
-    $("run").onclick = async () => {
-      hideBanner();
-      const btn = $("run");
-      const resEl = $("result");
-      btn.disabled = true;
-      openLoader();
-      try {
-        const r = await fetch("/v1/decisions", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify(buildPayload()),
-        });
-        const data = await r.json().catch(() => ({}));
-        if (!r.ok) {
-          resEl.innerHTML = `<p class="empty-state">${r.status}: ${data.detail || JSON.stringify(data)}</p>`;
-          return;
-        }
-        const d = data.deliverable;
-        const es = d.executive_summary;
-        resEl.innerHTML = `
-          <div class="card"><span class="pill">Executive summary</span>
-            <h3>${escapeHtml(es.headline)}</h3>
-            <p><strong>Situation</strong><br>${escapeHtml(es.situation)}</p>
-            <p style="margin-top:0.75rem"><strong>Recommendation</strong><br>${escapeHtml(es.recommendation)}</p>
-            <ul style="margin:0.5rem 0 0 1.1rem;color:var(--muted);font-size:0.9rem">${(es.next_steps || []).map((s) => "<li>" + escapeHtml(s) + "</li>").join("")}</ul>
-          </div>
-          <div class="card"><span class="pill">Signals &amp; risks</span>
-            <p>${listSection("Market signals", d.analysis.market_signals)}</p>
-            <p>${listSection("Risks", d.analysis.risks)}</p>
-            <p>${listSection("Opportunities", d.analysis.opportunities)}</p>
-          </div>
-          <details class="raw"><summary>Full JSON response</summary><pre class="raw">${escapeHtml(JSON.stringify(data, null, 2))}</pre></details>`;
-      } catch (e) {
-        resEl.innerHTML = `<p class="empty-state">Network error: ${escapeHtml(String(e))}</p>`;
-      } finally {
-        closeLoader();
-        btn.disabled = false;
-      }
-    };
-
     function escapeHtml(s) {
       return String(s)
         .replace(/&/g, "&amp;")
@@ -1162,10 +1554,240 @@ Premium adjacency on collection pages</textarea>
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;");
     }
-    function listSection(title, arr) {
-      if (!arr || !arr.length) return "";
-      return "<strong style=color:var(--text)>" + title + "</strong><br>" + arr.map((x) => "· " + escapeHtml(x)).join("<br>");
+
+    function humanizeStrategy(raw) {
+      const m = {
+        parity: "Parity positioning",
+        slightly_under_market: "Slightly under market",
+        premium_or_lift: "Premium lift",
+      };
+      if (m[raw]) return m[raw];
+      return String(raw || "")
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, function (c) {
+          return c.toUpperCase();
+        });
     }
+
+    function buildPriceBars(productPrice, competitors) {
+      const rows = competitors.map(function (c) {
+        return { label: c.title, price: Number(c.price), isYou: false };
+      });
+      rows.push({ label: "You", price: Number(productPrice), isYou: true });
+      const prices = rows.map(function (r) {
+        return r.price;
+      });
+      const maxP = Math.max(1, ...prices);
+      return rows
+        .map(function (x) {
+          const pct = Math.min(100, Math.round((x.price / maxP) * 100));
+          const lblClass = x.isYou ? "bar-label bar-label--you" : "bar-label";
+          const fillClass = x.isYou ? "bar-fill bar-fill--you" : "bar-fill";
+          return (
+            '<div class="bar-row">' +
+            '<div class="bar-row-header"><span class="' +
+            lblClass +
+            '">' +
+            escapeHtml(x.label) +
+            '</span><span class="bar-price">$' +
+            escapeHtml(String(x.price)) +
+            "</span></div>" +
+            '<div class="bar-track"><div class="' +
+            fillClass +
+            '" style="width:' +
+            pct +
+            '%"></div></div></div>'
+          );
+        })
+        .join("");
+    }
+
+    function compBlock(title, price) {
+      const wrap = document.createElement("div");
+      wrap.className = "comp-row";
+      wrap.innerHTML = `
+        <button type="button" class="remove-comp" aria-label="Remove competitor">×</button>
+        <label>Title</label>
+        <input type="text" class="c-title" value="${String(title).replace(/"/g, "&quot;")}" />
+        <label>Price (USD)</label>
+        <input type="number" class="c-price" step="0.01" min="0" value="${price === "" ? "" : price}" />`;
+      wrap.querySelector(".remove-comp").onclick = function () {
+        wrap.remove();
+        if (!compRoot.querySelector(".comp-row")) compRoot.appendChild(compBlock("", ""));
+      };
+      return wrap;
+    }
+
+    const compRoot = $("competitors");
+    compRoot.appendChild(compBlock("Brand A", "100"));
+    compRoot.appendChild(compBlock("Brand B", "130"));
+
+    $("addComp").onclick = () => compRoot.appendChild(compBlock("", ""));
+
+    function collectCompetitors() {
+      const comps = [];
+      compRoot.querySelectorAll(".comp-row").forEach((row) => {
+        const title = row.querySelector(".c-title").value.trim();
+        const priceRaw = row.querySelector(".c-price").value.trim();
+        if (!title || priceRaw === "") return;
+        const price = parseFloat(priceRaw);
+        if (Number.isNaN(price)) return;
+        comps.push({ title: title, price: price });
+      });
+      return comps;
+    }
+
+    function buildPayload() {
+      const manualTitle = $("manual-title").value.trim();
+      const manualPriceRaw = $("manual-price").value.trim();
+      const comps = collectCompetitors();
+      if (manualTitle && manualPriceRaw !== "") {
+        const price = parseFloat(manualPriceRaw);
+        if (Number.isNaN(price)) throw new Error("Manual price must be a number.");
+        const stockRaw = $("manual-stock").value.trim();
+        const inv = stockRaw === "" ? null : parseInt(stockRaw, 10);
+        return {
+          product: {
+            title: manualTitle,
+            description: $("manual-desc").value || "",
+            category: $("manual-category").value.trim() || null,
+            price_usd: price,
+            sku: null,
+            cost_usd: null,
+            inventory_units: Number.isNaN(inv) ? null : inv,
+            margin_target_pct: null,
+            constraints: [],
+          },
+          competitors: comps,
+        };
+      }
+      const pid = parseInt($("product-id").value, 10);
+      if (!pid || pid < 1) throw new Error("Enter a valid Product ID (or use manual product).");
+      return { product_id: pid, competitors: comps };
+    }
+
+    $("fetch-product").onclick = async function () {
+      hideBanner();
+      const btn = $("fetch-product");
+      const pid = parseInt($("product-id").value, 10);
+      if (!pid || pid < 1) {
+        showBanner("err", "Enter a valid numeric Product ID.");
+        return;
+      }
+      btn.disabled = true;
+      try {
+        const r = await fetch("/api/external-products/" + pid, { headers: { Accept: "application/json" } });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          showBanner("err", (data.detail || r.status).toString());
+          $("product-preview").classList.add("hidden");
+          return;
+        }
+        const resolvedId = data.id != null ? data.id : pid;
+        $("pv-data-badge").style.display = "inline-block";
+        $("pv-data-badge").textContent = "Data source: DummyJSON API";
+        $("pv-hero-title").textContent = data.title || "—";
+        $("pv-hero-price").textContent =
+          data.price_usd != null ? "$" + String(data.price_usd) : "—";
+        $("pv-hero-cat").textContent = data.category ? "Category: " + data.category : "Category: —";
+        $("pv-hero-stock").textContent =
+          data.stock != null ? "Stock: " + String(data.stock) : "Stock: —";
+        $("pv-hero-source").textContent =
+          "Source: DummyJSON (ID: " + (resolvedId != null ? String(resolvedId) : "—") + ")";
+        $("product-preview").classList.remove("hidden");
+      } catch (e) {
+        showBanner("err", String(e));
+      } finally {
+        btn.disabled = false;
+      }
+    };
+
+    $("run").onclick = async () => {
+      hideBanner();
+      const btn = $("run");
+      const resEl = $("result");
+      let payload;
+      try {
+        payload = buildPayload();
+      } catch (e) {
+        showBanner("err", String(e.message || e));
+        return;
+      }
+      btn.disabled = true;
+      openLoader();
+      try {
+        const r = await fetch("/v1/decisions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          const msg = typeof data.detail === "string" ? data.detail : JSON.stringify(data.detail || data);
+          resEl.innerHTML = `<p class="empty-state">${r.status}: ${escapeHtml(msg)}</p>`;
+          return;
+        }
+        const dec = data.decisions;
+        const p = data.product;
+        const comps = data.competitors || [];
+        const strategyLabel = humanizeStrategy(dec.pricing_strategy);
+        const sourceLine =
+          data.source === "dummyjson API"
+            ? "DummyJSON API" + (p.id != null ? " · ID " + escapeHtml(String(p.id)) : "")
+            : escapeHtml(data.source);
+        const barsHtml =
+          comps.length > 0
+            ? buildPriceBars(p.price_usd, comps)
+            : '<p class="hint" style="margin:0">Add competitors to see a relative price chart.</p>';
+        resEl.innerHTML = `
+          <div class="card decision-hero">
+            <span class="pill">Recommended action</span>
+            <div class="decision-hero-kpi">
+              <span class="kpi-label"><i data-lucide="circle-dollar-sign"></i><span>Recommended price</span></span>
+              <div class="kpi-value">$${escapeHtml(String(dec.recommended_price))}</div>
+            </div>
+            <div class="decision-hero-strategy">
+              <span class="strategy-row-label"><i data-lucide="chart-column"></i><span>Strategy</span></span>
+              <span class="strategy-tag">${escapeHtml(strategyLabel)}</span>
+            </div>
+            <div class="decision-hero-action">
+              <div class="action-icon-wrap" aria-hidden="true"><i data-lucide="zap"></i></div>
+              <div>
+                <div class="action-label">Primary action</div>
+                <div class="action-text">${escapeHtml(dec.promotion)}</div>
+                <div class="action-sub">${escapeHtml(dec.inventory_action)}</div>
+              </div>
+            </div>
+            <p class="decision-microcopy">AI-generated recommendation based on competitive benchmarking.</p>
+          </div>
+          <div class="card insight-card">
+            <div class="insight-label"><i data-lucide="lightbulb"></i><span>Key insight</span></div>
+            <p class="insight-text">${escapeHtml(dec.reasoning)}</p>
+          </div>
+          <div class="card product-card-dashboard">
+            <span class="pill">Product context</span>
+            <div class="product-dash-title">${escapeHtml(p.title || "—")}</div>
+            <div class="product-dash-price">$${escapeHtml(String(p.price_usd))}</div>
+            <div class="product-dash-lines">
+              Category: ${escapeHtml(p.category || "—")}<br />
+              Stock: ${p.stock != null ? escapeHtml(String(p.stock)) : "—"}<br />
+              Source: <strong style="color:var(--text)">${sourceLine}</strong>
+            </div>
+          </div>
+          <div class="card">
+            <span class="pill">Competitive price landscape</span>
+            <p class="hint" style="margin:0 0 0.5rem">Relative list prices (bars scale to the highest peer in the set).</p>
+            <div class="bar-chart">${barsHtml}</div>
+          </div>
+          <details class="raw"><summary>Technical detail (JSON)</summary><pre class="raw">${escapeHtml(JSON.stringify(data, null, 2))}</pre></details>`;
+      } catch (e) {
+        resEl.innerHTML = `<p class="empty-state">Network error: ${escapeHtml(String(e))}</p>`;
+      } finally {
+        closeLoader();
+        btn.disabled = false;
+        refreshIcons();
+      }
+    };
 
     /* First visit in this browser: open tour automatically once (see TOUR_STORAGE_KEY). */
     function maybeAutoStartTour() {
@@ -1201,17 +1823,18 @@ Premium adjacency on collection pages</textarea>
     }
     maybeAutoStartTour();
 
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", refreshIcons);
+    } else {
+      refreshIcons();
+    }
+
     fetch("/api/readiness")
       .then((r) => r.json())
       .then((x) => {
-        const msgs = [];
-        if (!x.openai_configured) {
-          msgs.push("OpenAI API key is not configured — add OPENAI_API_KEY to .env and restart (POST /v1/decisions returns 503 until then).");
-        }
         if (!x.rag_ready) {
-          msgs.push("RAG index not loaded — run: python scripts/build_index.py");
+          showBanner("warn", "Optional: run python scripts/build_index.py if you plan to use the RAG + agent stack later.");
         }
-        if (msgs.length) showBanner(!x.rag_ready ? "err" : "warn", msgs.join(" "));
       })
       .catch(() => {});
   </script>

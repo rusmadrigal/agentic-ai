@@ -1,20 +1,21 @@
 # Agentic AI Decision Engine for E-commerce
 
-Production-minded **FastAPI** service that turns product facts into **structured consulting-style decisions**, using a small **agentic workflow** (retrieve → analyze → decide → format) and lightweight **FAISS + JSON RAG**—packaged for **Render** (native Python web service) and local development.
+Production-minded **FastAPI** demo that combines **external product data** ([DummyJSON](https://dummyjson.com)) with a **simulated decision layer** (pricing, promotion, inventory heuristics). Optional **FAISS + OpenAI agents** remain in the codebase for extension. Packaged for **Render** and local development.
 
 ## For reviewers (e.g. hiring panel)
 
-1. Run the API locally (see **Quickstart**), set `OPENAI_API_KEY` in `.env`, and open **`http://127.0.0.1:8000/`** — interactive demo with prefilled product + competitor, **Guided tour** (top right) for a quick walkthrough, one-click “Generate decision brief”, and formatted output (plus raw JSON).
-2. Open **`/docs`** for OpenAPI: tagged operations, request **example** on `POST /v1/decisions`, and full schemas.
-3. **`GET /api/readiness`** — JSON flags for UI/load checks (`openai_configured`, `rag_ready`) without exposing secrets.
+1. Run the API locally (see **Quickstart**) and open **`http://127.0.0.1:8000/`** — enter a **Product ID**, **Fetch product** (server-side DummyJSON call), add **competitors** (title + price), **Generate Decision**, and review structured output. **Guided tour** (top right) walks the flow. **No OpenAI key is required** for this path.
+2. Open **`/docs`** for OpenAPI: **`POST /v1/decisions`** example (`product_id` or manual `product` + competitor `title`/`price`).
+3. **`GET /api/readiness`** — `openai_configured`, `rag_ready`, `simulated_decisions_ready` (no secrets).
 
 ## What it does
 
-- **`GET /`**: reviewer-friendly **HTML demo** (no separate frontend build).
-- **POST `/v1/decisions`**: accepts a `ProductBrief` and returns a `DecisionEngineResponse` with retrieval hits plus a `ClientDeliverable` (executive summary, analysis, and explicit decision objects).
-- **GET `/health`**: liveness and whether the FAISS artifacts are loaded.
+- **`GET /`**: **HTML demo** — business-oriented workflow (ingest → benchmark → decision cards).
+- **`GET /api/external-products/{id}`**: fetch + normalize a DummyJSON product (for the UI preview step).
+- **POST `/v1/decisions`**: **`product_id`** (live catalog) *or* manual **`product`** + **`competitors`** `[{ "title", "price" }]` → **`product`**, **`competitors`**, **`decisions`** (strategy, recommended price, promotion, inventory, reasoning), **`source`** (`dummyjson API` | `manual`).
+- **GET `/health`**: liveness; `rag_ready` reflects on-disk FAISS (optional).
 
-The workflow is intentionally explicit (no heavy orchestration framework) so the repo stays easy to read, test, and deploy.
+The repo keeps an explicit orchestrator + RAG modules for growth; the default `/v1/decisions` contract is intentionally simple for interviews and demos.
 
 ## Quickstart (local)
 
@@ -33,10 +34,15 @@ export OPENAI_API_KEY=...
 export EMBEDDING_MODE=embedding-3-small
 python scripts/build_index.py
 
-# Run the API
-export OPENAI_API_KEY=...   # required for /v1/decisions (LLM agents)
-uvicorn api.index:app --reload --host 0.0.0.0 --port 8000
+# Run the API (shortcut — same as uvicorn below)
+# OPENAI_API_KEY is optional for the simulated DummyJSON decision path
+make dev
+
+# Or explicitly:
+# uvicorn api.index:app --reload --host 0.0.0.0 --port 8000
 ```
+
+`make dev` is defined in the repo **`Makefile`** (local only): it runs **`python -m uvicorn`**, prefers **`.venv/bin/python`** if present (works with paths that contain spaces), checks that **uvicorn** is importable, and errors early if **port 8000** is already taken—use **`make dev PORT=8010`** (or free another process on 8000). Production keeps the native **`uvicorn`** start command (see **Deploying on Render**).
 
 Open `http://localhost:8000/docs` for interactive OpenAPI.
 
@@ -47,22 +53,10 @@ curl -s http://localhost:8000/v1/decisions \
   -H 'content-type: application/json' \
   -d @- <<'JSON'
 {
-  "product": {
-    "title": "Merino crewneck sweater — limited colors",
-    "description": "Mid-weight merino blend; strong email repeats; sizing content is thin.",
-    "category": "Apparel / Knitwear",
-    "price_usd": 89,
-    "cost_usd": 38,
-    "inventory_units": 4200,
-    "margin_target_pct": 52,
-    "constraints": ["Avoid sitewide 20% coupons", "Premium adjacency"]
-  },
+  "product_id": 1,
   "competitors": [
-    {
-      "name": "Nordic Knit Co. Crew",
-      "price_usd": 78,
-      "positioning_notes": "Frequent promos; stronger sizing content."
-    }
+    { "title": "Brand A", "price": 100 },
+    { "title": "Brand B", "price": 130 }
   ]
 }
 JSON
@@ -76,7 +70,7 @@ See `.env.example`. Important variables:
 
 | Variable | Purpose |
 | --- | --- |
-| `OPENAI_API_KEY` | Required for **agents** (`/v1/decisions`). Also used for embeddings when `EMBEDDING_MODE=embedding-3-small`. |
+| `OPENAI_API_KEY` | Optional for the **simulated** `/v1/decisions` path. Required if you wire the LLM/RAG orchestrator back into an endpoint. Also used for embeddings when `EMBEDDING_MODE=embedding-3-small`. |
 | `EMBEDDING_MODE` | `embedding-3-small` (default) or `pseudo` (offline deterministic vectors for demos/CI). |
 | `OPENAI_CHAT_MODEL` | Defaults to `gpt-4o-mini`. |
 | `OPENAI_EMBEDDING_MODEL` | Defaults to `text-embedding-3-small` (1536-d). |
@@ -127,6 +121,7 @@ pytest
 ## Project layout
 
 ```
+Makefile                  # Local: `make dev` (uvicorn --reload)
 api/index.py              # FastAPI entrypoint (ASGI app: app)
 Procfile                  # Render: web process (uvicorn + $PORT)
 render.yaml               # Render Blueprint (optional IaC)
