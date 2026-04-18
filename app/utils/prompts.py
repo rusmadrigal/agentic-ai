@@ -97,7 +97,7 @@ def format_brief_block(brief: ProductBrief) -> str:
             if c.price_usd is not None:
                 seg += f" (price_usd ~ {c.price_usd})"
             if c.positioning_notes:
-                seg += f" — {c.positioning_notes}"
+                seg += f": {c.positioning_notes}"
             if c.url:
                 seg += f" [{c.url}]"
             lines.append(seg)

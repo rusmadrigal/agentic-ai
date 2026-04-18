@@ -22,7 +22,7 @@ class CompetitorPriceInput(BaseModel):
 
 
 class SimulatedDecisionRequest(BaseModel):
-    """Either `product_id` (DummyJSON) or a manual `product` snapshot — not both."""
+    """Either `product_id` (DummyJSON) or a manual `product` snapshot, not both."""
 
     model_config = ConfigDict(json_schema_extra={"example": _EXAMPLE})
 

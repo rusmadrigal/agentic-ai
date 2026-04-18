@@ -23,7 +23,7 @@ def test_root_serves_demo_html():
     assert "Fetch product" in r.text
     assert "Pricing recommendations from live catalog" in r.text
     assert "starts automatically" in r.text
-    assert "aide_demo_tour_v4_done" in r.text
+    assert "aide_demo_tour_v5_done" in r.text
     assert "tour-root" in r.text
 
 

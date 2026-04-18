@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Agentic AI Decision Engine — Demo</title>
+  <title>Agentic AI Decision Engine - Demo</title>
   <style>
     :root {
       --bg: #0c1222;
@@ -864,7 +864,7 @@
       letter-spacing: 0.02em;
     }
 
-    /* —— Loading overlay (Stripe-inspired, no inner scroll) —— */
+    /* Loading overlay (Stripe-inspired, no inner scroll) */
     .load-overlay {
       position: fixed;
       inset: 0;
@@ -967,7 +967,7 @@
       .load-shimmer { opacity: 0.6; }
     }
 
-    /* Subtle scrollbars (output / JSON) — thin, not “Windows 95” */
+    /* Subtle scrollbars (output / JSON): thin, not "Windows 95" */
     #out .cards,
     pre.raw {
       scrollbar-width: thin;
@@ -983,7 +983,7 @@
     #out .cards::-webkit-scrollbar-track,
     pre.raw::-webkit-scrollbar-track { background: transparent; }
 
-    /* —— Guided tour (professional, mobile-safe) —— */
+    /* Guided tour (professional, mobile-safe) */
     #tour-root {
       position: fixed;
       inset: 0;
@@ -1200,15 +1200,15 @@
               <button type="button" class="secondary" id="fetch-product">Fetch product</button>
             </div>
           </div>
-          <p class="hint" id="fetch-hint">Loads public product JSON from dummyjson.com — server-side fetch for the demo.</p>
+          <p class="hint" id="fetch-hint">Loads public product JSON from dummyjson.com (server-side fetch for the demo).</p>
           <div id="product-preview" class="product-hero-card hidden" aria-live="polite">
             <span class="data-source-badge" id="pv-data-badge">Data source: DummyJSON API (External Data Simulation)</span>
-            <div class="product-hero-title" id="pv-hero-title">—</div>
-            <div class="product-hero-price" id="pv-hero-price">—</div>
+            <div class="product-hero-title" id="pv-hero-title">-</div>
+            <div class="product-hero-price" id="pv-hero-price">-</div>
             <div class="product-hero-meta">
-              <span id="pv-hero-cat">—</span><span class="meta-sep">·</span><span id="pv-hero-stock">Stock: —</span>
+              <span id="pv-hero-cat">-</span><span class="meta-sep">·</span><span id="pv-hero-stock">Stock: -</span>
             </div>
-            <div class="product-hero-foot" id="pv-hero-source">Source: DummyJSON API (External Data Simulation) (ID: —)</div>
+            <div class="product-hero-foot" id="pv-hero-source">Source: DummyJSON API (External Data Simulation) (ID: -)</div>
           </div>
 
           <fieldset class="manual-product" id="manual-fieldset">
@@ -1223,7 +1223,7 @@
               </div>
               <div>
                 <label for="manual-stock">Stock (optional)</label>
-                <input id="manual-stock" type="number" min="0" step="1" placeholder="—" />
+                <input id="manual-stock" type="number" min="0" step="1" placeholder="-" />
               </div>
             </div>
             <label for="manual-category">Category (optional)</label>
@@ -1274,7 +1274,7 @@
       <div class="dashboard-head">
         <h2>Decision Intelligence Layer</h2>
         <p class="dashboard-deck-hint">
-          Executive-ready outputs: recommended price, strategy, confidence, and rationale — powered by LLM reasoning or
+          Executive-ready outputs: recommended price, strategy, confidence, and rationale, powered by LLM reasoning or
           deterministic rules for side-by-side comparison.
         </p>
       </div>
@@ -1287,7 +1287,7 @@
             </div>
           </div>
           <p class="dashboard-empty-lead">AI standby</p>
-          <p class="empty-state">Fetch a catalog product (or enter a manual SKU), add competitor prices, then tap <strong>Get Pricing Recommendation</strong> — your decision, insight, and price bars appear here.</p>
+          <p class="empty-state">Fetch a catalog product (or enter a manual SKU), add competitor prices, then tap <strong>Get Pricing Recommendation</strong>. Your decision, insight, and price bars appear here.</p>
         </div>
       </div>
     </section>
@@ -1307,7 +1307,7 @@
         href="https://www.linkedin.com/in/rusmadrigal"
         rel="noopener noreferrer"
         target="_blank"
-        aria-label="LinkedIn — @rusmadrigal"
+        aria-label="LinkedIn: @rusmadrigal"
       >
         <i data-lucide="linkedin" aria-hidden="true"></i>
         <span class="footer-at">@rusmadrigal</span>
@@ -1318,7 +1318,7 @@
         href="https://github.com/rusmadrigal"
         rel="noopener noreferrer"
         target="_blank"
-        aria-label="GitHub — @rusmadrigal"
+        aria-label="GitHub: @rusmadrigal"
       >
         <i data-lucide="github" aria-hidden="true"></i>
         <span class="footer-at">@rusmadrigal</span>
@@ -1430,7 +1430,7 @@
       }
     }
 
-    /* —— Guided tour —— */
+    /* Guided tour */
     const tourRoot = document.getElementById("tour-root");
     const tourTitle = document.getElementById("tour-card-title");
     const tourCopy = document.getElementById("tour-card-copy");
@@ -1449,22 +1449,22 @@
     const tourStripBottom = document.getElementById("tour-strip-bottom");
     const tourStrips = [tourStripTop, tourStripLeft, tourStripRight, tourStripBottom];
 
-    const TOUR_STORAGE_KEY = "aide_demo_tour_v4_done";
+    const TOUR_STORAGE_KEY = "aide_demo_tour_v5_done";
 
     const TOUR_STEPS = [
       {
         selector: null,
         kicker: "Welcome",
-        title: "This tour starts automatically (once)",
+        title: "This tour runs once per browser (until you finish)",
         body:
-          "You’ll use a realistic merchandising flow: pull a live product from DummyJSON, add competitor prices, and generate a structured decision (simulated rules — no LLM required for this path). Dimmed areas close the tour on click; use Next / Back, Skip, or Escape. Replay anytime via Tour in the header.",
+          "You will use DummyJSON for the catalog, peer prices, and a structured pricing decision. Example competitor rows often appear as soon as the page loads. On first visit, the tour starts automatically once. Click dimmed areas to close, or use Next, Back, Skip, or Escape. Replay anytime from Tour in the header. Reload resets the page.",
       },
       {
         selector: "#product-id",
         kicker: "Step 1 · Data",
         title: "Product ID",
         body:
-          "Enter a DummyJSON product id (try 1–20). This drives external catalog ingestion on the server.",
+          "Enter a DummyJSON product id (try 1 to 20). This drives which catalog row the server fetches and which example peers we suggest next.",
         focus: true,
       },
       {
@@ -1472,7 +1472,7 @@
         kicker: "Step 2 · Ingest",
         title: "Fetch product",
         body:
-          "Calls the API to load title, price, category, and stock into the preview before you decide.",
+          "Calls the API to load title, price, category, and stock into the preview card before you request a decision.",
         focus: true,
       },
       {
@@ -1480,47 +1480,55 @@
         kicker: "Step 3 · Fallback",
         title: "Manual product (optional)",
         body:
-          "If you fill title + price here, the engine ignores Product ID — useful for private SKUs or what-if scenarios.",
+          "If you fill title and price here, recommendations use this product instead of Product ID. Use it for private SKUs or quick what-if runs.",
         focus: false,
       },
       {
-        selector: "#competitors",
+        selector: "#tour-competitors",
         kicker: "Step 4 · Peers",
         title: "Competitors",
         body:
-          "Add or remove peer rows (title + USD price). Average peer price anchors the simulated strategy.",
+          "Example rows often load automatically from DummyJSON (same catalog, same category when possible). After you change Product ID, tap Load example competitors to refresh. You can still edit each title and USD price.",
+        focus: false,
+      },
+      {
+        selector: "#engine-toggle",
+        kicker: "Step 5 · Engine",
+        title: "Decision engine",
+        body:
+          "Use AI (LLM) when your OpenAI key is configured. Simulated logic uses fixed rules (peer average and stock bands) with no model call. The line under the radios shows readiness for LLM and API key state.",
         focus: false,
       },
       {
         selector: "#run",
-        kicker: "Step 5 · Decide",
+        kicker: "Step 6 · Decide",
         title: "Get Pricing Recommendation",
         body:
-          "Runs POST /v1/decisions. The Decision Intelligence Layer shows the decision hero, key insight, product context, and competitive price bars.",
+          "Runs POST /v1/decisions. The Decision Intelligence Layer shows strategy, recommended price, confidence when available, rationale, and competitive price bars.",
         focus: true,
       },
       {
         selector: "#out",
-        kicker: "Step 6 · Output",
+        kicker: "Step 7 · Output",
         title: "Recommendations",
         body:
-          "Review pricing strategy, recommended price, promotion, inventory action, and reasoning. Expand raw JSON if needed.",
+          "Review pricing strategy, recommended price, promotion, inventory action, and reasoning. Expand raw JSON if you need the full payload.",
         focus: false,
       },
       {
         selector: "#tour-nav",
         kicker: "Reference",
-        title: "OpenAPI & health",
+        title: "Header shortcuts",
         body:
-          "Swagger documents the request/response contract. Readiness reflects optional OpenAI/RAG assets; simulated decisions run without them.",
+          "Reload starts fresh. Tour replays this walkthrough. API opens Swagger. Health and Ready return JSON for liveness and optional OpenAI or RAG assets.",
         focus: false,
       },
       {
         selector: "footer",
         kicker: "Done",
-        title: "You’re set",
+        title: "You are set",
         body:
-          "This demo highlights external data ingestion and business-oriented JSON. Click Finish to close.",
+          "This demo highlights external ingestion and business-oriented JSON. Click Finish to close.",
         focus: false,
       },
     ];
@@ -1958,7 +1966,7 @@
         llm.disabled = true;
         sim.checked = true;
         hint.textContent =
-          "OpenAI API key is not configured — add OPENAI_API_KEY for LLM mode. Simulated mode remains available.";
+          "OpenAI API key is not configured. Add OPENAI_API_KEY for LLM mode. Simulated mode remains available.";
       } else {
         llm.disabled = false;
         llm.checked = true;
@@ -1987,15 +1995,15 @@
         const resolvedId = data.id != null ? data.id : pid;
         $("pv-data-badge").style.display = "inline-block";
         $("pv-data-badge").textContent = "Data source: DummyJSON API (External Data Simulation)";
-        $("pv-hero-title").textContent = data.title || "—";
+        $("pv-hero-title").textContent = data.title || "-";
         $("pv-hero-price").textContent =
-          data.price_usd != null ? "$" + String(data.price_usd) : "—";
-        $("pv-hero-cat").textContent = data.category ? "Category: " + data.category : "Category: —";
+          data.price_usd != null ? "$" + String(data.price_usd) : "-";
+        $("pv-hero-cat").textContent = data.category ? "Category: " + data.category : "Category: -";
         $("pv-hero-stock").textContent =
-          data.stock != null ? "Stock: " + String(data.stock) : "Stock: —";
+          data.stock != null ? "Stock: " + String(data.stock) : "Stock: -";
         $("pv-hero-source").textContent =
           "Source: DummyJSON API (External Data Simulation) (ID: " +
-          (resolvedId != null ? String(resolvedId) : "—") +
+          (resolvedId != null ? String(resolvedId) : "-") +
           ")";
         $("product-preview").classList.remove("hidden");
       } catch (e) {
@@ -2093,11 +2101,11 @@
           </div>
           <div class="card product-card-dashboard">
             <span class="pill">Product context</span>
-            <div class="product-dash-title">${escapeHtml(p.title || "—")}</div>
+            <div class="product-dash-title">${escapeHtml(p.title || "-")}</div>
             <div class="product-dash-price">$${escapeHtml(String(p.price_usd))}</div>
             <div class="product-dash-lines">
-              Category: ${escapeHtml(p.category || "—")}<br />
-              Stock: ${p.stock != null ? escapeHtml(String(p.stock)) : "—"}<br />
+              Category: ${escapeHtml(p.category || "-")}<br />
+              Stock: ${p.stock != null ? escapeHtml(String(p.stock)) : "-"}<br />
               Source: <strong style="color:var(--text)">${sourceLine}</strong>
             </div>
           </div>
@@ -2122,7 +2130,7 @@
         try {
           if (localStorage.getItem(TOUR_STORAGE_KEY)) return;
         } catch (e) {
-          /* private mode — still try to show */
+          /* private mode: still try to show */
         }
         window.setTimeout(function () {
           if (loadOverlay.classList.contains("is-open")) return;
@@ -2136,7 +2144,7 @@
           try {
             localStorage.setItem(TOUR_STORAGE_KEY, "1");
           } catch (e) {
-            /* cannot persist — still open tour this load */
+            /* cannot persist: still open tour this load */
           }
           if (tourRoot.classList.contains("is-open")) return;
           openTour();

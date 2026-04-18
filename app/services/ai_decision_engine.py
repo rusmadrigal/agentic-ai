@@ -79,7 +79,7 @@ def parse_ai_response(raw: str, *, fallback_price: float) -> dict[str, Any]:
         return {
             "pricing_strategy": "fallback_parse_error",
             "recommended_price": float(fallback_price),
-            "promotion": "Manual review recommended — model output was not valid JSON.",
+            "promotion": "Manual review recommended: model output was not valid JSON.",
             "inventory_action": "Hold pricing changes until inputs and model output are validated.",
             "reasoning": (raw.strip()[:2000] if raw.strip() else "No parseable JSON returned."),
             "confidence": "low",

@@ -101,10 +101,12 @@ async def lifespan(app: FastAPI):
     global _orchestrator
     configure_logging()
     if settings.openai_api_key:
-        logger.info("OPENAI_API_KEY is configured — POST /v1/decisions uses the LLM by default when use_llm is omitted.")
+        logger.info(
+            "OPENAI_API_KEY is configured; POST /v1/decisions uses the LLM by default when use_llm is omitted.",
+        )
     else:
         logger.warning(
-            "OPENAI_API_KEY is not set — /v1/decisions uses simulated logic unless use_llm=false is sent explicitly.",
+            "OPENAI_API_KEY is not set; /v1/decisions uses simulated logic unless use_llm=false is sent explicitly.",
         )
     try:
         retriever = Retriever.from_default_paths()
@@ -157,7 +159,7 @@ async def get_external_product(product_id: int) -> dict[str, Any]:
 @app.get("/api/example-competitors/{product_id}", tags=["external"])
 async def get_example_competitors(product_id: int, limit: int = 3) -> dict[str, Any]:
     """
-    Suggest peer rows (title + USD price) from other DummyJSON products — same category when possible.
+    Suggest peer rows (title + USD price) from other DummyJSON products, same category when possible.
 
     For demo / meeting use; replaces hand-typed competitor examples.
     """

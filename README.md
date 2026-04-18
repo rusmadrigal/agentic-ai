@@ -1,6 +1,6 @@
 # Agentic AI Decision Engine
 
-![MVP screenshot — decision and intelligence layer](docs/images/mvp.png)
+![MVP screenshot: decision and intelligence layer](docs/images/mvp.png)
 
 ## What this project does
 
@@ -8,18 +8,18 @@
 
 The flow is:
 
-1. **Data ingestion** — Product from [DummyJSON](https://dummyjson.com) (external catalog simulation) or a **manual product** (SKU / what-if).
-2. **Competitor benchmarking** — Title + price rows (typed in, or **example competitors** loaded from the same DummyJSON catalog via API).
-3. **Decision engine** — With `OPENAI_API_KEY`, you can use **LLM reasoning** (`use_llm: true`, or the default when a key is present). Without a key, or with **simulated mode**, **deterministic rules** drive pricing, promotion, and inventory guidance using the **same JSON shape**.
-4. **Presentation layer** — HTML UI at `/` with a decision hero, **confidence**, insight, product context, and a visual price comparison; stable contract on **`POST /v1/decisions`**.
+1. **Data ingestion:** Product from [DummyJSON](https://dummyjson.com) (external catalog simulation) or a **manual product** (SKU / what-if).
+2. **Competitor benchmarking:** Title + price rows (typed in, or **example competitors** loaded from the same DummyJSON catalog via API).
+3. **Decision engine:** With `OPENAI_API_KEY`, you can use **LLM reasoning** (`use_llm: true`, or the default when a key is present). Without a key, or with **simulated mode**, **deterministic rules** drive pricing, promotion, and inventory guidance using the **same JSON shape**.
+4. **Presentation layer:** HTML UI at `/` with a decision hero, **confidence**, insight, product context, and a visual price comparison; stable contract on **`POST /v1/decisions`**.
 
 This is **not** a replacement for an ERP or enterprise pricing platform. It demonstrates **how AI can structure real or simulated inputs into business-ready outputs**.
 
 ## For reviewers
 
 1. Start the API (see **Quick start**), open **`http://127.0.0.1:8000/`**, enter a **Product ID**, click **Fetch product**, review competitors (or **Load example competitors**), choose **Use AI (LLM)** or **Simulated logic**, then **Get Pricing Recommendation**. A guided tour is available in the header.
-2. **`/docs`** — OpenAPI; try **`POST /v1/decisions`** with `product_id` or `product` + `competitors`, and optional **`use_llm`**.
-3. **`GET /api/readiness`** — `openai_configured`, `llm_decisions_ready`, `rag_ready`, etc. (no secrets exposed).
+2. **`/docs`:** OpenAPI; try **`POST /v1/decisions`** with `product_id` or `product` + `competitors`, and optional **`use_llm`**.
+3. **`GET /api/readiness`:** `openai_configured`, `llm_decisions_ready`, `rag_ready`, etc. (no secrets exposed).
 
 ## Quick start (local)
 
@@ -86,7 +86,7 @@ Query-time embeddings must stay consistent with how the FAISS index was built.
 
 ## Deploying (Render)
 
-- **Blueprint:** `render.yaml` — install dependencies, run `scripts/build_index.py`, start `uvicorn` on `$PORT`.
+- **Blueprint:** `render.yaml` (install dependencies, run `scripts/build_index.py`, start `uvicorn` on `$PORT`).
 - **Health:** `GET /health`.
 - Set **`OPENAI_API_KEY`** as a secret if you use LLM or OpenAI embeddings at build time.
 

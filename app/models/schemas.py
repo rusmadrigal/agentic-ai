@@ -25,7 +25,7 @@ class Product(BaseModel):
 _PRODUCT_BRIEF_OPENAPI_EXAMPLE: dict = {
     "product": {
         "sku": "SKU-4412",
-        "title": "Merino crewneck sweater — limited colors",
+        "title": "Merino crewneck sweater, limited colors",
         "description": "Mid-weight merino blend; strong email repeats; sizing content is thin.",
         "category": "Apparel / Knitwear",
         "price_usd": 89.0,
