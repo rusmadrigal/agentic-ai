@@ -1,5 +1,5 @@
 """
-LLM-powered pricing decision layer (OpenAI).
+LLM-powered pricing decision layer (LangChain + OpenAI).
 
 Ingestion (DummyJSON / manual) stays in the API route; this module only turns
 structured product + competitor rows into a validated decisions block.
@@ -11,52 +11,55 @@ import json
 import re
 from typing import Any
 
-from openai import OpenAI
-
 from app.core.config import settings
 from app.core.logging import get_logger
+from app.services.pricing_chain import build_pricing_decision_chain
+from app.services.rag_helper import get_pricing_retriever, retrieve_context
 
 logger = get_logger(__name__)
 
 
-def _product_and_competitors_prompt(product: dict[str, Any], competitors: list[dict[str, Any]]) -> str:
-    return f"""You are a senior pricing strategist for an e-commerce company.
-
-Analyze the product and competitor pricing, then return a structured decision.
-
-Product (JSON):
-{json.dumps(product, indent=2, ensure_ascii=False)}
-
-Competitors (JSON array of {{title, price}}):
-{json.dumps(competitors, indent=2, ensure_ascii=False)}
-
-Return ONLY valid JSON with exactly this structure (no markdown, no prose):
-{{
-  "pricing_strategy": "short snake_case or phrase describing the strategy",
-  "recommended_price": <number>,
-  "promotion": "concise promotion guidance",
-  "inventory_action": "concise inventory / supply guidance",
-  "reasoning": "2-4 sentences, business-focused, non-technical",
-  "confidence": "low" | "medium" | "high"
-}}
-
-Be concise, realistic, and grounded in the numbers given."""
+def _message_content_to_str(content: Any) -> str:
+    """Normalize AIMessage.content (str or multimodal blocks) to a single string."""
+    if content is None:
+        return ""
+    if isinstance(content, str):
+        return content.strip()
+    if isinstance(content, list):
+        parts: list[str] = []
+        for block in content:
+            if isinstance(block, str):
+                parts.append(block)
+            elif isinstance(block, dict) and block.get("type") == "text":
+                parts.append(str(block.get("text", "")))
+            else:
+                parts.append(str(block))
+        return "".join(parts).strip()
+    return str(content).strip()
 
 
 def generate_ai_decision(product: dict[str, Any], competitors: list[dict[str, Any]]) -> str:
-    """Call OpenAI chat completions; return message content (JSON string)."""
+    """Run the shared pricing RunnableSequence; return JSON string for parse_ai_response."""
     if not settings.openai_api_key:
         raise RuntimeError("OPENAI_API_KEY is not configured")
 
-    client = OpenAI(api_key=settings.openai_api_key)
-    response = client.chat.completions.create(
+    product_json = json.dumps(product, indent=2, ensure_ascii=False)
+    competitors_json = json.dumps(competitors, indent=2, ensure_ascii=False)
+    rag_context = retrieve_context(get_pricing_retriever(), product, competitors)
+
+    chain = build_pricing_decision_chain(
         model=settings.openai_chat_model,
-        messages=[{"role": "user", "content": _product_and_competitors_prompt(product, competitors)}],
+        api_key=settings.openai_api_key,
         temperature=0.3,
-        response_format={"type": "json_object"},
     )
-    content = response.choices[0].message.content
-    return (content or "").strip()
+    message = chain.invoke(
+        {
+            "product_json": product_json,
+            "competitors_json": competitors_json,
+            "rag_context": rag_context,
+        },
+    )
+    return _message_content_to_str(message.content)
 
 
 def _extract_json_object(text: str) -> str:

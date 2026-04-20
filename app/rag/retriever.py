@@ -1,3 +1,4 @@
+import asyncio
 import json
 from pathlib import Path
 
@@ -52,6 +53,19 @@ class Retriever:
             RetrievedChunk(id=hid, title=title, text=text, score=score)
             for hid, title, text, score in hits
         ]
+
+    def get_relevant_documents(self, query: str, k: int = 4) -> list[str]:
+        """
+        Sync entry point for retrieval by raw query (e.g. from a threadpool worker).
+        Returns chunk text bodies, top-k by vector similarity.
+        """
+
+        async def _run() -> list[str]:
+            qv = await self._embedder.embed_query(query)
+            hits = self._store.search(qv, k=k)
+            return [text for _, _, text, _ in hits]
+
+        return asyncio.run(_run())
 
 
 def load_knowledge_chunks(path: Path) -> list[dict]:

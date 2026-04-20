@@ -24,6 +24,7 @@ from app.models.simulated import SimulatedDecisionsBlock, SimulatedDecisionReque
 from app.rag.retriever import Retriever
 from app.services.orchestrator import DecisionOrchestrator
 from app.services.ai_decision_engine import generate_ai_decision, parse_ai_response
+from app.services.rag_helper import set_pricing_retriever
 from app.services.rule_decisions import compute_simulated_decisions
 
 configure_logging()
@@ -108,15 +109,19 @@ async def lifespan(app: FastAPI):
         logger.warning(
             "OPENAI_API_KEY is not set; /v1/decisions uses simulated logic unless use_llm=false is sent explicitly.",
         )
+    set_pricing_retriever(None)
     try:
         retriever = Retriever.from_default_paths()
         _orchestrator = DecisionOrchestrator(retriever)
+        set_pricing_retriever(retriever)
         logger.info("orchestrator initialized (FAISS index loaded)")
     except FileNotFoundError as exc:
         logger.warning("startup: %s", exc)
         _orchestrator = None
+        set_pricing_retriever(None)
     yield
     _orchestrator = None
+    set_pricing_retriever(None)
 
 
 app = FastAPI(
@@ -197,33 +202,37 @@ async def health() -> dict:
 
 
 def _langsmith_ping_sync() -> str:
-    """Single ChatOpenAI invoke for LangSmith smoke tests (sync; run in threadpool)."""
-    from langchain_core.messages import HumanMessage
-    from langchain_openai import ChatOpenAI
+    """SEO analysis chain (sync; run in threadpool). LangSmith uses LANGCHAIN_* env vars."""
+    from app.services.seo_analysis_chain import build_seo_chain
 
-    llm = ChatOpenAI(
+    chain = build_seo_chain(
         model=settings.openai_chat_model,
-        api_key=settings.openai_api_key,
+        api_key=settings.openai_api_key or "",
         temperature=0,
     )
-    out = llm.invoke(
-        [HumanMessage(content="Say hello and confirm the system is working")],
-    )
-    return str(out.content)
+    page = {
+        "url": "https://example.com",
+        "keyword": "seo tools",
+        "title": "Example Title",
+        "h1": "Example H1",
+    }
+    out = chain.invoke(page)
+    content = out.content
+    return content if isinstance(content, str) else str(content or "")
 
 
 @app.get("/debug/langsmith-ping", tags=["ops"])
 async def langsmith_ping() -> dict[str, str]:
     """
-    Minimal LangChain LLM call. Enable LangSmith with LANGCHAIN_TRACING_V2=true and LANGCHAIN_API_KEY.
+    LangChain SEO smoke test. Enable LangSmith with LANGCHAIN_TRACING_V2=true and LANGCHAIN_API_KEY.
     """
     if not settings.openai_api_key:
         raise HTTPException(
             status_code=503,
             detail="OPENAI_API_KEY is required for this route.",
         )
-    reply = await run_in_threadpool(_langsmith_ping_sync)
-    return {"reply": reply}
+    result = await run_in_threadpool(_langsmith_ping_sync)
+    return {"result": result}
 
 
 @app.post(
