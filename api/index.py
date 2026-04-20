@@ -196,6 +196,36 @@ async def health() -> dict:
     }
 
 
+def _langsmith_ping_sync() -> str:
+    """Single ChatOpenAI invoke for LangSmith smoke tests (sync; run in threadpool)."""
+    from langchain_core.messages import HumanMessage
+    from langchain_openai import ChatOpenAI
+
+    llm = ChatOpenAI(
+        model=settings.openai_chat_model,
+        api_key=settings.openai_api_key,
+        temperature=0,
+    )
+    out = llm.invoke(
+        [HumanMessage(content="Say hello and confirm the system is working")],
+    )
+    return str(out.content)
+
+
+@app.get("/debug/langsmith-ping", tags=["ops"])
+async def langsmith_ping() -> dict[str, str]:
+    """
+    Minimal LangChain LLM call. Enable LangSmith with LANGCHAIN_TRACING_V2=true and LANGCHAIN_API_KEY.
+    """
+    if not settings.openai_api_key:
+        raise HTTPException(
+            status_code=503,
+            detail="OPENAI_API_KEY is required for this route.",
+        )
+    reply = await run_in_threadpool(_langsmith_ping_sync)
+    return {"reply": reply}
+
+
 @app.post(
     "/v1/decisions",
     response_model=SimulatedDecisionResponse,
